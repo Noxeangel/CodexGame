@@ -7,7 +7,6 @@
 
 	public class GameOverMC extends MovieClip
 	{
-		public var rejouer_btn:SimpleButton;
 		
 		public function GameOverMC()
 		{

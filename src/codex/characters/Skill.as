@@ -34,7 +34,7 @@ package codex.characters
 			_id = "";
 			_name = "";
 			_isWarSkill = false;
-			_effectAnim = new MovieClip();
+			//_effectAnim = new MovieClip();
 			_targetedVital = 0;
 			_multiplicator = 0;
 			_originStat = 0;

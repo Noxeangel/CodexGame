@@ -70,8 +70,8 @@ package codex.characters
 			
 			for each(var tmp:MovieClip in _animationArray)
 			{
-				tmp.scaleX = -2;
-				tmp.scaleY = 2;
+				tmp.scaleX = -1.5;
+				tmp.scaleY = 1.5;
 				this.addChild(tmp);
 			}
 			

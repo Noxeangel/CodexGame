@@ -249,7 +249,7 @@ package
 			var loader:URLLoader = new URLLoader();
 			loader.load(new URLRequest(ARCHETYPE_XML_FILE_PATH));
 			loader.addEventListener(Event.COMPLETE, LoadSkillXML);
-			trace("begin init");
+			//trace("begin init");
 		}
 		public function LoadSkillXML(e:Event):void
 		{
@@ -358,7 +358,7 @@ package
 					{
 						currentScreen.end();
 						removeChild(currentScreen);
-						trace( getQualifiedClassName( currentScreen) + " is removed from stage");
+						//trace( getQualifiedClassName( currentScreen) + " is removed from stage");
 					}
 					switch (e.targetScreen)
 					{

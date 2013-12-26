@@ -37,7 +37,7 @@ package managers
 			{
 				caster.removeMana(skill.cost);
 			}
-			target.removeLife(skill.multiplicator * (caster.statsArray[skill.originStat] as BaseStat).finalAmmount);
+			target.removeLife(skill.multiplicator * (caster.statsArray[skill.originStat] as BaseStat).finalAmmount - (target.statsArray[Main.CONSTITUTION] as BaseStat).finalAmmount);
 		}
 		
 		public function calculateInitiativeArray(view:MovieClip = null):Array

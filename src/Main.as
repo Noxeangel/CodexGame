@@ -25,11 +25,11 @@ package
 		//				Global Options Variables
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-		public static var isKeyboard:Boolean = false; //Is Input keyboeard or mouse
+		public static var isKeyboard:int = 0; //Is Input keyboeard or mouse if 0 = mouse
 		public static var language:int = 0; //Language set to French if 1 or english if 0
 		public static var isTutorial:int = 0; //Is tutorials displayed if 0 false
-		public static var bgmVolume:Number = 0;	//Voluime of the music
-		public static var sfxVolume:Number = 0;	//Volume of the effects
+		public static var bgmVolume:Number = 0.5;	//Voluime of the music
+		public static var sfxVolume:Number = 0.5;	//Volume of the effects
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Global Constants used as an enum match a name with an int

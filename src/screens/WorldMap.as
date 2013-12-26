@@ -615,6 +615,7 @@ package screens
 			Main.managers.Character.lt3.rest();
 			console.DisplayOnConsole(new String("Vous campez aux environs de " + Main.managers.Level.Levels[index].name));
 			UpdateArmyDisplays();
+			ChangeTurn();
 			UpdateCharacterDisplays();
 		}
 		

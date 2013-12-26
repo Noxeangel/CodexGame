@@ -300,9 +300,10 @@ package screens
 				
 				Main.managers.Duel.ApplyAction(hero, enemy, chosenSkill);
 				
-				chosenSkill.effectAnim.x = 200;
-				chosenSkill.effectAnim.y = 200;
+				chosenSkill.effectAnim.x = 50;
+				chosenSkill.effectAnim.y = 50;
 				view.addChild(chosenSkill.effectAnim);
+				trace(getQualifiedClassName(chosenSkill.effectAnim));
 				InitTurnManager();
 			}
 			

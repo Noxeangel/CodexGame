@@ -48,14 +48,14 @@ package displayable
 			{
 			  skills.pop();
 			}
-			trace( "skills array size= " + skills.length.toString());
+			//trace( "skills array size= " + skills.length.toString());
 			character.SetSkillKnown();
 			for each(var skill:Skill in character.duelSkillArray)
 			{
 				if (skill.isKnown)
 				{
 					skills.push(skill);
-					trace (skill.name);
+					//trace (skill.name);
 				}
 			}
 			

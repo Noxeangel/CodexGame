@@ -35,7 +35,6 @@ package screens
 		private var InitiativeArray:Array = null;
 		private var timer:Timer;
 		
-		
 		private var chosenSkill:Skill;
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Displayables
@@ -45,12 +44,21 @@ package screens
 		private var heroIcon:HeroIconMC;
 		private var ltDisplay:DuelCharacterDisplay;
 		private var ltIcon:MovieClip;
-		//private var duelbg_mc:DuelBackgroundMC;
 		private var console:Console;
 		
 		
 		private var _ltChooser:LtChooser;
 		private var _skillChooser:SkillChooser;
+		
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//				Protagonists
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		private var hero:General;
+		private var lieutenant:Character;
+		private var enemy:General;
+		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Constructor of the WorldMap Screen
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,15 +103,27 @@ package screens
 		
 		public function Init():void
 		{
+			//Init the protagonists by copying characters from the Character Manager
+			hero = Main.managers.Character.hero;
+			
+			if ( Main.managers.Character.returnGeneralFromLevel(Main.managers.Level.getIDByIndex(Main.managers.Level.currentLocation)) != null)
+			{
+				enemy = Main.managers.Character.returnGeneralFromLevel(Main.managers.Level.getIDByIndex(Main.managers.Level.currentLocation));
+			}
+			else
+			{
+				throw new Error("No ennemy in this level, consult Enemies.XML for more details");
+			}
+			
+			//init the Timer which will call the _update function
 			timer = new Timer(1000 / 24, 0);
 			timer.addEventListener(TimerEvent.TIMER, _update);
 			timer.start();
 			
-			Main.managers.Duel.InitDuel();
-			Main.managers.Duel.general = Main.managers.Character.hero;
-
+			//Launch the BGM
 			Main.managers.SoundM.playBGM(Main.BGM4);
 			
+			//
 			view.mouseEnabled = false;
 			
 			GenerateScreen();
@@ -120,7 +140,7 @@ package screens
 			console.y = stage.stageHeight;
 
 			heroDisplay = new DuelCharacterDisplay(0, stage.stageHeight - 65);
-			heroDisplay.Update(Main.managers.Duel.general);
+			heroDisplay.Update(hero);
 			heroDisplay.DisplayIcon(HeroIconMC);
 			heroIcon = new HeroIconMC();
 			heroIcon.x = 7;
@@ -129,12 +149,12 @@ package screens
 
 			ltDisplay = new DuelCharacterDisplay(0 , stage.stageHeight);
 
-			Main.managers.Duel.general.animationMachine.x = 200;
-			Main.managers.Duel.general.animationMachine.y = 500;
+			hero.animationMachine.x = 200;
+			hero.animationMachine.y = 500;
 
-			Main.managers.Duel.enemy.animationMachine.x = 800;
-			Main.managers.Duel.enemy.animationMachine.y = 500;
-			Main.managers.Duel.enemy.animationMachine.scaleX = -1;
+			enemy.animationMachine.x = 800;
+			enemy.animationMachine.y = 500;
+			enemy.animationMachine.scaleX = -1;
 
 			_ltChooser = new LtChooser();
 			_ltChooser.x = stage.stageWidth / 2;
@@ -145,16 +165,14 @@ package screens
 			_skillChooser.x = 200;
 			_skillChooser.y = 200;
 			_skillChooser.visible = false;
-			//Adding displayables to stage
 			
+			//Adding displayables to stage
 			_view.addChild(console);
 			_view.addChild(heroDisplay);
 			_view.addChild(heroIcon);
-			_view.addChild(Main.managers.Duel.general.animationMachine);
-			_view.addChild(Main.managers.Duel.enemy.animationMachine);
+			_view.addChild(hero.animationMachine);
+			_view.addChild(enemy.animationMachine);
 			_view.addChild(_skillChooser);
-			
-			
 			
 			LtChoiceScreenGeneration();
 		}
@@ -183,24 +201,24 @@ package screens
 				switch(e.target)
 				{
 					case _ltChooser.view.lt1Icon_mc:
-						Main.managers.Duel.lieutenant = Main.managers.Character.lt1;
+						lieutenant = Main.managers.Character.lt1;
 						ltIcon = new Lt1IconMC;
 						break;
 					case _ltChooser.view.lt2Icon_mc:
-						Main.managers.Duel.lieutenant = Main.managers.Character.lt2;
+						lieutenant = Main.managers.Character.lt2;
 						ltIcon = new Lt2IconMC;
 						break;
 					case _ltChooser.view.lt3Icon_mc:
-						Main.managers.Duel.lieutenant = Main.managers.Character.lt3;
+						lieutenant = Main.managers.Character.lt3;
 						ltIcon = new Lt3IconMC;
 						break;
 				}
 				
-				Main.managers.Duel.lieutenant.SetSkillKnown();
-				Main.managers.Duel.general.SetSkillKnown();
-				Main.managers.Duel.enemy.SetSkillKnown();
+				lieutenant.SetSkillKnown();
+				hero.SetSkillKnown();
+				enemy.SetSkillKnown();
 				
-				ltDisplay.Update(Main.managers.Duel.lieutenant);
+				ltDisplay.Update(lieutenant);
 				ltDisplay.DisplayIcon(HeroIconMC);
 				ltDisplay.x = 0;
 				ltDisplay.y = 0;
@@ -212,9 +230,9 @@ package screens
 				ltIcon.width = ltIcon.height = 60 ;
 				ltDisplay.view.addChild(ltIcon);
 				
-				Main.managers.Duel.lieutenant.animationMachine.x = 150;
-				Main.managers.Duel.lieutenant.animationMachine.y = 600;
-				view.addChild(Main.managers.Duel.lieutenant.animationMachine);
+				lieutenant.animationMachine.x = 150;
+				lieutenant.animationMachine.y = 600;
+				view.addChild(lieutenant.animationMachine);
 				InitTurnManager();
 			}
 		}
@@ -254,7 +272,7 @@ package screens
 		private function GeneralSkillChoiceScreenGeneration():void
 		{
 			trace("GeneralSkillChoiceScreenGeneration");
-			_skillChooser.SetUp(Main.managers.Duel.general as Character);
+			_skillChooser.SetUp(hero as Character);
 			_skillChooser.visible = true;
 			_skillChooser.addEventListener(MouseEvent.CLICK, _onGeneralSkillChoosed);
 		}
@@ -279,8 +297,9 @@ package screens
 						chosenSkill = _skillChooser.skills[2];
 						break;
 				}
-				Main.managers.Duel.general.removeMana(chosenSkill.cost);
-				Main.managers.Duel.enemy.removeLife(chosenSkill.multiplicator * Main.managers.Duel.general.statsArray[chosenSkill.originStat]);
+				
+				Main.managers.Duel.ApplyAction(hero, enemy, chosenSkill);
+				
 				chosenSkill.effectAnim.x = 200;
 				chosenSkill.effectAnim.y = 200;
 				view.addChild(chosenSkill.effectAnim);
@@ -292,7 +311,7 @@ package screens
 		private function LtSkillChoiceScreenGeneration():void
 		{
 			trace("LtSkillChoiceScreenGeneration");
-			_skillChooser.SetUp(Main.managers.Duel.lieutenant);
+			_skillChooser.SetUp(lieutenant);
 			_skillChooser.visible = true;
 			_skillChooser.addEventListener(MouseEvent.CLICK, _onLtSkillChoosed);
 		}
@@ -311,15 +330,16 @@ package screens
 					case _skillChooser.view.skillButton1_mc:
 						chosenSkill = _skillChooser.skills[0];
 						break;
-					case _skillChooser.view.skillButton1_mc:
+					case _skillChooser.view.skillButton2_mc:
 						chosenSkill = _skillChooser.skills[1];
 						break;
-					case _skillChooser.view.skillButton1_mc:
+					case _skillChooser.view.skillButton3_mc:
 						chosenSkill = _skillChooser.skills[2];
 						break;
 				}
-				Main.managers.Duel.lieutenant.removeMana(chosenSkill.cost);
-				Main.managers.Duel.enemy.removeLife(chosenSkill.multiplicator * Main.managers.Duel.lieutenant.statsArray[chosenSkill.originStat]);
+				
+				Main.managers.Duel.ApplyAction(lieutenant, enemy, chosenSkill);
+				
 				chosenSkill.effectAnim.x = 200;
 				chosenSkill.effectAnim.y = 200;
 				view.addChild(chosenSkill.effectAnim);
@@ -330,7 +350,7 @@ package screens
 		private function EnemySkillChoiceScreenGeneration():void
 		{
 			trace("EnemySkillChoiceScreenGeneration");
-			_skillChooser.SetUp(Main.managers.Duel.enemy as Character);
+			_skillChooser.SetUp(enemy as Character);
 			_skillChooser.visible = true;
 			_skillChooser.addEventListener(MouseEvent.CLICK, _onEnemySkillChoosed);
 		}
@@ -357,8 +377,8 @@ package screens
 						break;
 				}
 				
-				Main.managers.Duel.enemy.removeMana(chosenSkill.cost);
-				Main.managers.Duel.general.removeLife(chosenSkill.multiplicator * Main.managers.Duel.enemy.statsArray[chosenSkill.originStat]);
+				Main.managers.Duel.ApplyAction(enemy,hero, chosenSkill);
+				
 				chosenSkill.effectAnim.x = 200;
 				chosenSkill.effectAnim.y = 200;
 				view.addChild(chosenSkill.effectAnim);
@@ -368,6 +388,8 @@ package screens
 		
 		private function WinScreenGeneration():void
 		{
+			hero.LevelUp();
+			lieutenant.LevelUp();
 			dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED, "WorldMap", true, true));
 		}
 		
@@ -381,14 +403,14 @@ package screens
 		
 		private function _update(e:TimerEvent):void
 		{
-			heroDisplay.Update(Main.managers.Duel.general);
-			if(Main.managers.Duel.lieutenant != null)
-				ltDisplay.Update(Main.managers.Duel.lieutenant);
-		}
-
-		private function _onClickHandler(e:MouseEvent):void
-		{
-			dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED, "WorldMap", true, true));
+			if ( hero != null)
+			{
+				heroDisplay.Update(hero);
+			}
+			if (lieutenant != null)
+			{
+				ltDisplay.Update(lieutenant);
+			}
 		}
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,13 +419,15 @@ package screens
 		
 		private function CheckWinOrLoose():Boolean
 		{
-			if ( (round == 3))
+			if ( (round == 1))
 			{
 				WinScreenGeneration();
+				
 				return true;
 			}
-			if (Main.managers.Duel.general.isDead)
+			if (hero.isDead)
 			{
+				LooseScreenGeneration();
 				return true;
 			}
 			return false;
@@ -415,6 +439,22 @@ package screens
 		
 		override public function end():void
 		{
+			Main.managers.Character.hero = hero;
+			
+			switch (lieutenant.name)
+			{
+				case (Main.managers.Character.lt1.name):
+					Main.managers.Character.lt1 = lieutenant;
+					break;
+				case (Main.managers.Character.lt2.name):
+					Main.managers.Character.lt2 = lieutenant;
+					break;
+				case (Main.managers.Character.lt3.name):
+					Main.managers.Character.lt3 = lieutenant;
+					break;	
+			}
+			
+			timer.removeEventListener(TimerEvent.TIMER, _update);
 			super.end();
 		}
 

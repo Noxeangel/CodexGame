@@ -5,6 +5,7 @@ package managers
 	import codex.characters.General;
 	import codex.characters.Skill;
 	import codex.characters.Vital;
+	import displayable.FadingText;
 	import flash.display.MovieClip;
 	import screens.FSM.DuelFSM.ChooseLieutenantState;
 	import screens.FSM.DuelFSM.ChooseSkillEnemyState;
@@ -31,13 +32,23 @@ package managers
 
 
 		
-		public function ApplyAction(caster:Character, target:Character, skill:Skill):void
+		public function ApplyAction(caster:Character, target:Character, skill:Skill, view:MovieClip):void
 		{
 			if (skill.hasCost)
 			{
 				caster.removeMana(skill.cost);
 			}
-			target.removeLife(skill.multiplicator * (caster.statsArray[skill.originStat] as BaseStat).finalAmmount - (target.statsArray[Main.CONSTITUTION] as BaseStat).finalAmmount);
+			
+			var damages:int  = int(skill.multiplicator * (caster.statsArray[skill.originStat] as BaseStat).finalAmmount * Math.random());
+			target.removeLife(damages);
+			var color:uint = 0xFF0000;
+			if (damages < 0)
+			{
+				damages *= -1;
+				color = 0x00FF00;
+			}
+			var damagesText:FadingText = new FadingText(damages.toString(), target.animationMachine.x, target.animationMachine.y - 100 , 4, 30, color);
+			view.addChild(damagesText);
 		}
 		
 		public function calculateInitiativeArray(view:MovieClip = null):Array

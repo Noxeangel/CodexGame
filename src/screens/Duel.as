@@ -8,6 +8,7 @@ package screens
 	import displayable.DuelCharacterDisplay;
 	import displayable.LtChooser;
 	import displayable.SkillChooser;
+	import displayable.TargetChooser;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -36,6 +37,7 @@ package screens
 		private var timer:Timer;
 		
 		private var chosenSkill:Skill;
+		private var chosenTarget:Character;
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Displayables
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +51,7 @@ package screens
 		
 		private var _ltChooser:LtChooser;
 		private var _skillChooser:SkillChooser;
-		
+		private var _targetChooser:TargetChooser;
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Protagonists
@@ -150,10 +152,10 @@ package screens
 			ltDisplay = new DuelCharacterDisplay(0 , stage.stageHeight);
 
 			hero.animationMachine.x = 200;
-			hero.animationMachine.y = 500;
+			hero.animationMachine.y = 400;
 
 			enemy.animationMachine.x = 800;
-			enemy.animationMachine.y = 500;
+			enemy.animationMachine.y = 400;
 			enemy.animationMachine.scaleX = -1;
 
 			_ltChooser = new LtChooser();
@@ -162,9 +164,14 @@ package screens
 			_ltChooser.addEventListener(MouseEvent.CLICK, _onLtChoosed);
 			
 			_skillChooser = new SkillChooser();
-			_skillChooser.x = 200;
-			_skillChooser.y = 200;
+			_skillChooser.x = 0;
+			_skillChooser.y = stage.stageHeight - 2* heroDisplay.height - _skillChooser.height;
 			_skillChooser.visible = false;
+			
+			_targetChooser = new TargetChooser();
+			_targetChooser.x = _skillChooser.width;
+			_targetChooser.y = stage.stageHeight - 2 * heroDisplay.height - _targetChooser.height;
+			_targetChooser.visible = false;
 			
 			//Adding displayables to stage
 			_view.addChild(console);
@@ -173,12 +180,12 @@ package screens
 			_view.addChild(hero.animationMachine);
 			_view.addChild(enemy.animationMachine);
 			_view.addChild(_skillChooser);
-			
+			_view.addChild(_targetChooser);
 			LtChoiceScreenGeneration();
 		}
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
-		//				Core Functions (these functions manage the switch between initiative turns
+		//				Lieutenant choice functions (appends once at the begining of the Duel)
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		private function LtChoiceScreenGeneration():void
@@ -190,7 +197,7 @@ package screens
 		
 		private function _onLtChoosed(e:MouseEvent):void
 		{
-			trace (e.target);
+			//trace (e.target);
 			if (e.target == _ltChooser.view.lt1Icon_mc || e.target == _ltChooser.view.lt2Icon_mc || e.target == _ltChooser.view.lt3Icon_mc)
 			{
 				
@@ -231,11 +238,15 @@ package screens
 				ltDisplay.view.addChild(ltIcon);
 				
 				lieutenant.animationMachine.x = 150;
-				lieutenant.animationMachine.y = 600;
+				lieutenant.animationMachine.y = 500;
 				view.addChild(lieutenant.animationMachine);
 				InitTurnManager();
 			}
 		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//				Core of the initiative turn process
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		private function InitTurnManager():void
 		{
@@ -269,9 +280,15 @@ package screens
 			}
 		}
 		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//				Hero turn managing functions
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		private function GeneralSkillChoiceScreenGeneration():void
 		{
-			trace("GeneralSkillChoiceScreenGeneration");
+			chosenSkill = null;
+			chosenTarget = null;
+			//trace("GeneralSkillChoiceScreenGeneration");
 			_skillChooser.SetUp(hero as Character);
 			_skillChooser.visible = true;
 			_skillChooser.addEventListener(MouseEvent.CLICK, _onGeneralSkillChoosed);
@@ -297,21 +314,54 @@ package screens
 						chosenSkill = _skillChooser.skills[2];
 						break;
 				}
+				_targetChooser.SetUp(hero,lieutenant,enemy);
+				_targetChooser.visible = true;
+				_targetChooser.addEventListener(MouseEvent.CLICK, _onGeneralTargetChoosed);
 				
-				Main.managers.Duel.ApplyAction(hero, enemy, chosenSkill);
-				
-				chosenSkill.effectAnim.x = 50;
-				chosenSkill.effectAnim.y = 50;
-				view.addChild(chosenSkill.effectAnim);
-				trace(getQualifiedClassName(chosenSkill.effectAnim));
-				InitTurnManager();
 			}
 			
 		}
+		private function _onGeneralTargetChoosed(e:MouseEvent):void
+		{
+			if (e.target == _targetChooser.view.skillButton1_mc || e.target == _targetChooser.view.skillButton2_mc || e.target == _targetChooser.view.skillButton3_mc)
+			{
+			
+				_targetChooser.visible = false;
+				_targetChooser.removeEventListener(MouseEvent.CLICK, _onGeneralTargetChoosed);
+				
+				
+				switch(e.target)
+				{
+					case _targetChooser.view.skillButton1_mc:
+						chosenTarget = enemy;
+						break;
+					case _targetChooser.view.skillButton2_mc:
+						chosenTarget = hero;
+						break;
+					case _targetChooser.view.skillButton3_mc:
+						chosenTarget = lieutenant;
+						break;
+				}
+				
+				Main.managers.Duel.ApplyAction(hero, chosenTarget, chosenSkill,view);
+				
+				chosenSkill.effectAnim.x = chosenTarget.animationMachine.x;
+				chosenSkill.effectAnim.y = chosenTarget.animationMachine.y;
+				chosenSkill.effectAnim.gotoAndPlay(1);
+				view.addChild(chosenSkill.effectAnim);
+				InitTurnManager();
+			}
+		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//				Lieutenant turn managing functions
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		private function LtSkillChoiceScreenGeneration():void
 		{
-			trace("LtSkillChoiceScreenGeneration");
+			chosenSkill = null;
+			chosenTarget = null;
+			//trace("LtSkillChoiceScreenGeneration");
 			_skillChooser.SetUp(lieutenant);
 			_skillChooser.visible = true;
 			_skillChooser.addEventListener(MouseEvent.CLICK, _onLtSkillChoosed);
@@ -338,19 +388,54 @@ package screens
 						chosenSkill = _skillChooser.skills[2];
 						break;
 				}
+				_targetChooser.SetUp(hero,lieutenant,enemy);
+				_targetChooser.visible = true;
+				_targetChooser.addEventListener(MouseEvent.CLICK, _onLtTargetChoosed);
+			}
+		}
+		
+		private function _onLtTargetChoosed(e:MouseEvent):void
+		{
+			if (e.target == _targetChooser.view.skillButton1_mc || e.target == _targetChooser.view.skillButton2_mc || e.target == _targetChooser.view.skillButton3_mc)
+			{
+			
+				_targetChooser.visible = false;
+				_targetChooser.removeEventListener(MouseEvent.CLICK, _onLtTargetChoosed);
 				
-				Main.managers.Duel.ApplyAction(lieutenant, enemy, chosenSkill);
 				
-				chosenSkill.effectAnim.x = 200;
-				chosenSkill.effectAnim.y = 200;
+				switch(e.target)
+				{
+					case _targetChooser.view.skillButton1_mc:
+						chosenTarget = enemy;
+						break;
+					case _targetChooser.view.skillButton2_mc:
+						chosenTarget = hero;
+						break;
+					case _targetChooser.view.skillButton3_mc:
+						chosenTarget = lieutenant;
+						break;
+				}
+				
+				Main.managers.Duel.ApplyAction(lieutenant, chosenTarget, chosenSkill,view);
+				
+				chosenSkill.effectAnim.x = chosenTarget.animationMachine.x;
+				chosenSkill.effectAnim.y = chosenTarget.animationMachine.y;
+				chosenSkill.effectAnim.gotoAndPlay(1);
 				view.addChild(chosenSkill.effectAnim);
 				InitTurnManager();
 			}
 		}
 		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//				Enemy turn managing functions
+		//				TODO: Create a basic IA system
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		private function EnemySkillChoiceScreenGeneration():void
 		{
-			trace("EnemySkillChoiceScreenGeneration");
+			chosenSkill = null;
+			chosenTarget = null;
+			//trace("EnemySkillChoiceScreenGeneration");
 			_skillChooser.SetUp(enemy as Character);
 			_skillChooser.visible = true;
 			_skillChooser.addEventListener(MouseEvent.CLICK, _onEnemySkillChoosed);
@@ -377,15 +462,46 @@ package screens
 						chosenSkill = _skillChooser.skills[2];
 						break;
 				}
+				_targetChooser.SetUp(hero,lieutenant,enemy);
+				_targetChooser.visible = true;
+				_targetChooser.addEventListener(MouseEvent.CLICK, _onLtTargetChoosed);
 				
-				Main.managers.Duel.ApplyAction(enemy,hero, chosenSkill);
+			}
+		}
+		private function _onEnemyTargetChoosed(e:MouseEvent):void
+		{
+			if (e.target == _targetChooser.view.skillButton1_mc || e.target == _targetChooser.view.skillButton2_mc || e.target == _targetChooser.view.skillButton3_mc)
+			{
+			
+				_targetChooser.visible = false;
+				_targetChooser.removeEventListener(MouseEvent.CLICK, _onEnemyTargetChoosed);
 				
-				chosenSkill.effectAnim.x = 200;
-				chosenSkill.effectAnim.y = 200;
+				
+				switch(e.target)
+				{
+					case _targetChooser.view.skillButton1_mc:
+						chosenTarget = enemy;
+						break;
+					case _targetChooser.view.skillButton2_mc:
+						chosenTarget = hero;
+						break;
+					case _targetChooser.view.skillButton3_mc:
+						chosenTarget = lieutenant;
+						break;
+				}
+				
+				Main.managers.Duel.ApplyAction(enemy, chosenTarget, chosenSkill,view);
+				
+				chosenSkill.effectAnim.x = chosenTarget.animationMachine.x;
+				chosenSkill.effectAnim.y = chosenTarget.animationMachine.y;
+				chosenSkill.effectAnim.gotoAndPlay(1);
 				view.addChild(chosenSkill.effectAnim);
 				InitTurnManager();
 			}
 		}
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//				Win and Loose screens
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		private function WinScreenGeneration():void
 		{
@@ -420,7 +536,7 @@ package screens
 		
 		private function CheckWinOrLoose():Boolean
 		{
-			if ( (round == 1))
+			if ( enemy.isDead)
 			{
 				WinScreenGeneration();
 				

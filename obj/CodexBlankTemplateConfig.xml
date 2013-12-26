@@ -16,7 +16,7 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'25/12/2013'</value>
+      <value>'26/12/2013'</value>
     </define>
     <define append="true">
       <name>CONFIG::air</name>
@@ -32,18 +32,18 @@
     </define>
     <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
-      <path-element>C:\Users\Olivier\Documents\COURS ISART\Flash\Projet\Projet AlFlashDevelop\CodexGame\src</path-element>
+      <path-element>C:\Users\Olivier\Documents\COURS ISART\Flash\Projet\SourceCode\CodexGame\src</path-element>
       <path-element>C:\Program Files (x86)\2D\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
     <include-libraries>
-      <library>C:\Users\Olivier\Documents\COURS ISART\Flash\Projet\Projet AlFlashDevelop\CodexGame\lib\assets.swc</library>
+      <library>C:\Users\Olivier\Documents\COURS ISART\Flash\Projet\SourceCode\CodexGame\lib\assets.swc</library>
     </include-libraries>
     <library-path append="true">
-      <path-element>C:\Users\Olivier\Documents\COURS ISART\Flash\Projet\Projet AlFlashDevelop\CodexGame\lib\greensock.swc</path-element>
+      <path-element>C:\Users\Olivier\Documents\COURS ISART\Flash\Projet\SourceCode\CodexGame\lib\greensock.swc</path-element>
     </library-path>
   </compiler>
   <file-specs>
-    <path-element>C:\Users\Olivier\Documents\COURS ISART\Flash\Projet\Projet AlFlashDevelop\CodexGame\src\Preloader.as</path-element>
+    <path-element>C:\Users\Olivier\Documents\COURS ISART\Flash\Projet\SourceCode\CodexGame\src\Preloader.as</path-element>
   </file-specs>
   <default-background-color>#DEDEDE</default-background-color>
   <default-frame-rate>24</default-frame-rate>

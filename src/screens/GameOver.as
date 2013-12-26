@@ -1,5 +1,6 @@
 package screens
 {
+	import displayable.PaperButtonLeft;
 	import events.ScreenEvents;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -11,6 +12,8 @@ package screens
 	public class GameOver extends BaseScreen
 	{
 		
+		public var mainMenuButton:PaperButtonLeft;
+		
 		public function GameOver()
 		{
 			super( new GameOverMC );
@@ -20,20 +23,27 @@ package screens
 		}
 		
 		// =====================================================================
-		public function get view():MainMenuMC 
+		public function get view():GameOverMC 
 		{
-			return _view as MainMenuMC;
+			return _view as GameOverMC;
 		}			
 		
 		// =====================================================================
 		override protected function onViewReady(e:Event):void
 		{
-			view.addEventListener(MouseEvent.CLICK, _onClickHandler); 
+			
+			mainMenuButton = new PaperButtonLeft();
+			mainMenuButton.x = 0;
+			mainMenuButton.y = 30;
+			mainMenuButton.SetPaperButton("Menu",9999,MoveIconMC);
+			mainMenuButton.addEventListener(MouseEvent.CLICK, _onClickHandler);
+			view.addChild(mainMenuButton);
+			//view.addEventListener(MouseEvent.CLICK, _onClickHandler); 
 		}
 		
 		private function _onClickHandler(e:MouseEvent):void
 		{
-			dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED, "MainMenu", false, false));
+			dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED, "MainMenu", true, true));
 		}
 		
 		// =====================================================================

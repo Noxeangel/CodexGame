@@ -39,6 +39,7 @@ package managers
 		
 		public function Init():void
 		{
+			Levels = new Array();
 			currentTurn = 0;
 			currentLocation = 0;
 			processLevelXML();

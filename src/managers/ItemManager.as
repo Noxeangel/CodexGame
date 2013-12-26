@@ -52,6 +52,8 @@ package managers
 		
 		public function Init():void
 		{
+			partyInventory = new Inventory();
+			totalInventory = new Inventory();
 			processItemXML();
 		}
 

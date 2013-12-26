@@ -31,6 +31,7 @@ package screens
 		// =====================================================================
 		override protected function onViewReady(e:Event):void
 		{
+			Main.managers.Init();
 			
 			mainMenuButton = new PaperButtonLeft();
 			mainMenuButton.x = 0;

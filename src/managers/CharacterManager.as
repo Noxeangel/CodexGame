@@ -80,6 +80,15 @@ package managers
 		
 		public function Init():void
 		{
+			archList = new Array();
+			_hero = new General();
+			_lt1 = new Character();
+			_lt2 = new Character();
+			_lt3 = new Character();
+			
+			_army = new Army();
+			enemies = new Array();
+			
 			processArchetypeXML();
 		}
 		

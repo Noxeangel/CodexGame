@@ -290,10 +290,10 @@ package screens
 					case _skillChooser.view.skillButton1_mc:
 						chosenSkill = _skillChooser.skills[0] ;
 						break;
-					case _skillChooser.view.skillButton1_mc:
+					case _skillChooser.view.skillButton2_mc:
 						chosenSkill = _skillChooser.skills[1];
 						break;
-					case _skillChooser.view.skillButton1_mc:
+					case _skillChooser.view.skillButton3_mc:
 						chosenSkill = _skillChooser.skills[2];
 						break;
 				}
@@ -369,10 +369,10 @@ package screens
 					case _skillChooser.view.skillButton1_mc:
 						chosenSkill = _skillChooser.skills[0];
 						break;
-					case _skillChooser.view.skillButton1_mc:
+					case _skillChooser.view.skillButton2_mc:
 						chosenSkill = _skillChooser.skills[1] ;
 						break;
-					case _skillChooser.view.skillButton1_mc:
+					case _skillChooser.view.skillButton3_mc:
 						chosenSkill = _skillChooser.skills[2];
 						break;
 				}

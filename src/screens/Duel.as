@@ -121,7 +121,7 @@ package screens
 			timer.start();
 			
 			//Launch the BGM
-			Main.managers.SoundM.playBGM(Main.BGM4);
+			Main.managers.SoundM.playBGM(Main.BGM_DUEL);
 			
 			//
 			view.mouseEnabled = false;

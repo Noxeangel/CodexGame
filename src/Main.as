@@ -27,7 +27,9 @@ package
 		
 		public static var isKeyboard:Boolean = false; //Is Input keyboeard or mouse
 		public static var language:int = 0; //Language set to French if 1 or english if 0
-		public static var isTutorial:Boolean = true; //Is tutorials displayed
+		public static var isTutorial:int = 0; //Is tutorials displayed if 0 false
+		public static var bgmVolume:Number = 0;	//Voluime of the music
+		public static var sfxVolume:Number = 0;	//Volume of the effects
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Global Constants used as an enum match a name with an int
@@ -121,13 +123,14 @@ package
 		//===================================================
 		public static const BIP:int = 0;
 		
-		public static const BGM1:int = 1;
-		public static const BGM2:int = 2;
-		public static const BGM3:int = 3;
-		public static const BGM4:int = 4;
+		public static const BGM_MAIN_MENU:int = 1;
+		public static const BGM_WORLD_MAP:int = 2;
+		public static const BGM_DUEL:int = 3;
+		public static const BGM_WAR:int = 4;
+		public static const BGM_GAME_OVER:int = 5;
 		
 		//public static const BONUS1:int = 4;
-		public static const BONUS2:int = 5;
+		//public static const BONUS2:int = 5;
 		public static const BONUS3:int = 6;
 		public static const BONUS4:int = 7;
 		
@@ -164,6 +167,9 @@ package
 		private var req5:URLRequest = new URLRequest("../src/assets/sound/PaperSound.mp3");
 		private var Paper_sfx:Sound =  new Sound(req5);
 		
+		private var req6:URLRequest = new URLRequest("../src/assets/sound/GameOver.mp3");
+		private var gameOver_bgm:Sound =  new Sound(req6);
+		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Global XML Files that store the datas
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,13 +181,14 @@ package
 		private const LEVELS_XML_FILE_PATH:String = "../src/assets/data/XML/Levels.xml"; //Path of the xml file which contains the data of the levels		
 		
 		private const ARCHETYPE_XML_FILE_PATH:String = "../src/assets/data/XML/Archetypes.xml"; //Path of the xml file which contains the data of the archetypes
-		private const SKILLS_XML_FILE_PATH:String = "../src/assets/data/XML/Skills.xml"; //Path to the xml file which contains the data of the skills
-		private const ENEMIES_XML_FILE_PATH:String = "../src/assets/data/XML/Enemies.xml"; //Path to the xml file which contains the data of the enemies
-		
 		public static var ArchetypeXMLFile:XML;
-		public static var SkillXMLFile:XML
-		public static var EnemyXMLFile:XML
 		
+		private const SKILLS_XML_FILE_PATH:String = "../src/assets/data/XML/Skills.xml"; //Path to the xml file which contains the data of the skills
+		public static var SkillXMLFile:XML
+		
+		private const ENEMIES_XML_FILE_PATH:String = "../src/assets/data/XML/Enemies.xml"; //Path to the xml file which contains the data of the enemies
+		public static var EnemyXMLFile:XML
+
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Access Point to Manager Singleton
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,10 +325,11 @@ package
 			}
 			Main.managers.Init();
 
-			Main.managers.SoundM.addRessource(worldMap_bgm, Main.BGM3);
-			Main.managers.SoundM.addRessource(mainMenu_bgm, Main.BGM1);
-			Main.managers.SoundM.addRessource(duel_bgm, Main.BGM2);
-			Main.managers.SoundM.addRessource(war_bgm, Main.BGM4);
+			Main.managers.SoundM.addRessource(worldMap_bgm, Main.BGM_WORLD_MAP);
+			Main.managers.SoundM.addRessource(mainMenu_bgm, Main.BGM_MAIN_MENU);
+			Main.managers.SoundM.addRessource(duel_bgm, Main.BGM_DUEL);
+			Main.managers.SoundM.addRessource(war_bgm, Main.BGM_WAR);
+			Main.managers.SoundM.addRessource(gameOver_bgm, Main.BGM_GAME_OVER);
 			Main.managers.SoundM.addRessource(Paper_sfx, Main.BIP);
 			
 			_onInitComplete();

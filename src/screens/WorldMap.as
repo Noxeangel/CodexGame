@@ -249,7 +249,7 @@ package screens
 			worldMapBackground.y = stage.stageHeight / 2;
 
 			//Play World Map BGM
-			Main.managers.SoundM.playBGM(Main.BGM3);
+			Main.managers.SoundM.playBGM(Main.BGM_WORLD_MAP);
 			
 			//Add the WorldMap Bg to view;
 			view.addChildAt(worldMapBackground,1);

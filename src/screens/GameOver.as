@@ -39,6 +39,10 @@ package screens
 			mainMenuButton.SetPaperButton("Menu",9999,MoveIconMC);
 			mainMenuButton.addEventListener(MouseEvent.CLICK, _onClickHandler);
 			view.addChild(mainMenuButton);
+			
+			//Play World Map BGM
+			Main.managers.SoundM.playBGM(Main.BGM_GAME_OVER);
+			
 			//view.addEventListener(MouseEvent.CLICK, _onClickHandler); 
 		}
 		

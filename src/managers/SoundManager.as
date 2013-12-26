@@ -29,6 +29,9 @@ package managers
 		private var _paused:Boolean = false;
 		private var _position:Number = .0;
 
+		
+		private var stBGM:SoundTransform = new SoundTransform();
+		private var stSFX:SoundTransform = new SoundTransform();
 
 		public function SoundManager()
 		{
@@ -41,6 +44,9 @@ package managers
 			{
 				_tracks.push(null);
 			}
+			
+			
+			
 		}
 
 		public function addRessource(sound:Sound, idx:uint = Main.ACTION1):void
@@ -58,7 +64,7 @@ package managers
 		
 		public function playSfx(idx:int = Main.ACTION1):void
 		{
-			/*
+			stSFX.volume = Main.sfxVolume;
 			var s:Sound = _tracks[idx];
 			if (s == null)
 			{
@@ -67,15 +73,15 @@ package managers
 			else
 			{
 				_channelSFX.stop();
-				_channelSFX = s.play();
+				_channelSFX = s.play(0,1,stSFX);
 				
 			}
-			*/
+			
 		}
 		
-		public function playBGM(idx:int = Main.BGM1, repeat:int = 999):void
+		public function playBGM(idx:int = Main.BGM_MAIN_MENU, repeat:int = 999):void
 		{
-			/*
+			stBGM.volume = Main.bgmVolume;
 			var s:Sound = _tracks[idx];
 			//trace( _tracks);
 			if (s == null)
@@ -89,10 +95,11 @@ package managers
 					_paused = false;
 					_channelBGM.stop();					
 					_currentBgmIdx = idx;
-					_channelBGM = s.play(0, 999);					
+					
+					_channelBGM = s.play(0, 999,stBGM);					
 				}
 			}
-			*/
+			
 		}
 		
 		// PAUSE/RESUME BGM

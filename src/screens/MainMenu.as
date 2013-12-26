@@ -1,6 +1,7 @@
 package screens 
 {
 	import displayable.HUDButton;
+	import displayable.OptionWindow;
 	import displayable.PaperButtonLeft;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -21,14 +22,15 @@ package screens
 		public var options_btn:PaperButtonLeft;
 		public var quit_btn:PaperButtonLeft;
 		
-		
+		public var option_win:OptionWindow;
 		
 		public function MainMenu() 
 		{
 			super(new MainMenuMC);
 			_switchTo = new Array(	"Intro",
 									"GameOver",
-									"WorldMap"
+									"WorldMap",
+									"MainMenu"
 											);
 			_screenName = "MainMenu";
 									
@@ -50,6 +52,10 @@ package screens
 		private function Init():void
 		{
 			Main.managers.Item.ChangeLanguageFunction();
+			
+			option_win = new OptionWindow();
+			option_win.x = 200;
+			option_win.y = 200;
 			
 			play_btn = new PaperButtonLeft();
 			load_btn = new PaperButtonLeft();
@@ -76,7 +82,7 @@ package screens
 			quit_btn.SetPaperButton(Main.managers.Text.GetText(TextManager.QUIT),9999,MoveIconMC);
 			quit_btn.addEventListener(MouseEvent.CLICK, _onClickHandler);
 			
-			Main.managers.SoundM.playBGM(Main.BGM1);
+			Main.managers.SoundM.playBGM(Main.BGM_MAIN_MENU);
 			
 			GenerateScreen();
 		}
@@ -87,6 +93,9 @@ package screens
 			view.addChild(load_btn);
 			view.addChild(options_btn);
 			view.addChild(quit_btn);
+			
+			view.addChild(option_win);
+			option_win.visible = false;
 		}
 		
 		private function _onClickHandler(e:MouseEvent):void
@@ -97,15 +106,8 @@ package screens
 					dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED,"Intro",true,true));
 					break;
 				case options_btn:	
-					if (Main.language == 0)
-					{
-						Main.language = 1;
-					}
-					else
-					{
-						Main.language = 0;
-					}
-					Main.managers.Item.ChangeLanguageFunction();
+					option_win.Init();
+					option_win.visible = true;
 					break;
 				case load_btn:	
 					dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED,"WorldMap",true,true));

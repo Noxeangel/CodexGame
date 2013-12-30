@@ -184,7 +184,7 @@ package screens
 			//Initialization of the Inventory Panel
 			inventory = new InventoryPanel();
 			inventory.SetInventoryPanel(Main.managers.Item.partyInventory.ReturnItemArray());
-			inventory.x = 280;
+			inventory.x = 95;
 			inventory.y = 0;
 			
 			//Initialize characterDisplays

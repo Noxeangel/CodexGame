@@ -19,7 +19,7 @@
   </classpaths>
   <!-- Build options -->
   <build>
-    <option accessible="False" />
+    <option accessible="True" />
     <option advancedTelemetry="False" />
     <option allowSourcePathOverlap="False" />
     <option benchmark="True" />

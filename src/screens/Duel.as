@@ -222,6 +222,7 @@ package screens
 				}
 				
 				lieutenant.SetSkillKnown();
+				lieutenant.animationMachine.Init(lieutenant.archetype.name);
 				hero.SetSkillKnown();
 				enemy.SetSkillKnown();
 				
@@ -237,9 +238,16 @@ package screens
 				ltIcon.width = ltIcon.height = 60 ;
 				ltDisplay.view.addChild(ltIcon);
 				
+				
 				lieutenant.animationMachine.x = 150;
 				lieutenant.animationMachine.y = 500;
 				view.addChild(lieutenant.animationMachine);
+				/*
+				//Debug Test army animation holder
+				Main.managers.Character.army.knights.animationMachine.x = 300;
+				Main.managers.Character.army.knights.animationMachine.y = 300;
+				view.addChild(Main.managers.Character.army.knights.animationMachine);
+				*/
 				InitTurnManager();
 			}
 		}

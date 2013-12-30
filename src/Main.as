@@ -5,6 +5,7 @@ package
 	import flash.display.StageScaleMode;
 	import flash.events.DataEvent;
 	import flash.events.Event;
+	import flash.events.SecurityErrorEvent;
 	import flash.media.Sound;
 	import flash.net.LocalConnection;
 	import flash.net.URLLoader;
@@ -15,6 +16,8 @@ package
 	import managers.GlobalManager;
 	import events.ManagerEvent;
 	import flash.utils.getQualifiedClassName;
+	import flash.system.Security;
+	import flash.net.*
 	/**
 	 * ...
 	 * @author Olivier
@@ -149,25 +152,25 @@ package
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		
-		private var req1:URLRequest = new URLRequest("../src/assets/sound/MainMenu.mp3");
+		private var req1:URLRequest = new URLRequest("assets/sound/MainMenu.mp3");
 		private var mainMenu_bgm:Sound =  new Sound(req1);
 		
 
-		private var req2:URLRequest = new URLRequest("../src/assets/sound/Duel.mp3");
+		private var req2:URLRequest = new URLRequest("assets/sound/Duel.mp3");
 		private var duel_bgm:Sound =  new Sound(req2);
 		
 
-		private var req3:URLRequest = new URLRequest("../src/assets/sound/War.mp3");
+		private var req3:URLRequest = new URLRequest("assets/sound/War.mp3");
 		private var war_bgm:Sound =  new Sound(req3);
 		
 
-		private var req4:URLRequest = new URLRequest("../src/assets/sound/WorldMap.mp3");
+		private var req4:URLRequest = new URLRequest("assets/sound/WorldMap.mp3");
 		private var worldMap_bgm:Sound =  new Sound(req4);
 		
-		private var req5:URLRequest = new URLRequest("../src/assets/sound/PaperSound.mp3");
+		private var req5:URLRequest = new URLRequest("assets/sound/PaperSound.mp3");
 		private var Paper_sfx:Sound =  new Sound(req5);
 		
-		private var req6:URLRequest = new URLRequest("../src/assets/sound/GameOver.mp3");
+		private var req6:URLRequest = new URLRequest("assets/sound/GameOver.mp3");
 		private var gameOver_bgm:Sound =  new Sound(req6);
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,18 +178,18 @@ package
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		public static var ItemXMLFile:XML;
-		private const ITEM_XML_FILE_PATH:String = "../src/assets/data/XML/Item.xml";
+		private const ITEM_XML_FILE_PATH:String = "assets/data/XML/Item.xml";
 		
 		public static var LevelsXMLFile:XML;
-		private const LEVELS_XML_FILE_PATH:String = "../src/assets/data/XML/Levels.xml"; //Path of the xml file which contains the data of the levels		
+		private const LEVELS_XML_FILE_PATH:String = "assets/data/XML/Levels.xml"; //Path of the xml file which contains the data of the levels		
 		
-		private const ARCHETYPE_XML_FILE_PATH:String = "../src/assets/data/XML/Archetypes.xml"; //Path of the xml file which contains the data of the archetypes
+		private const ARCHETYPE_XML_FILE_PATH:String = "assets/data/XML/Archetypes.xml"; //Path of the xml file which contains the data of the archetypes
 		public static var ArchetypeXMLFile:XML;
 		
-		private const SKILLS_XML_FILE_PATH:String = "../src/assets/data/XML/Skills.xml"; //Path to the xml file which contains the data of the skills
+		private const SKILLS_XML_FILE_PATH:String = "assets/data/XML/Skills.xml"; //Path to the xml file which contains the data of the skills
 		public static var SkillXMLFile:XML
 		
-		private const ENEMIES_XML_FILE_PATH:String = "../src/assets/data/XML/Enemies.xml"; //Path to the xml file which contains the data of the enemies
+		private const ENEMIES_XML_FILE_PATH:String = "assets/data/XML/Enemies.xml"; //Path to the xml file which contains the data of the enemies
 		public static var EnemyXMLFile:XML
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,6 +210,7 @@ package
 		
 		public function Main():void
 		{
+			Security.loadPolicyFile("http://running-panda.fr/flash/codex/pf.xml");
 			managers = GlobalManager.getInstance();
 			
 			if (stage)
@@ -249,8 +253,15 @@ package
 			var loader:URLLoader = new URLLoader();
 			loader.load(new URLRequest(ARCHETYPE_XML_FILE_PATH));
 			loader.addEventListener(Event.COMPLETE, LoadSkillXML);
+			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onError);
 			//trace("begin init");
 		}
+		
+		private function onError(e:SecurityErrorEvent):void 
+		{
+			throw new Error(e.errorID, e.errorID);
+		}
+		
 		public function LoadSkillXML(e:Event):void
 		{
 			if (e.target.data != null)

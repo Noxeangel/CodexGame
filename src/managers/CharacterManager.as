@@ -245,7 +245,10 @@ package managers
 				
 				enemies.push(tmpArray);
 			}
-			
+			for each( var enemyArr:Array in enemies)
+			{
+				(enemyArr[0] as General).animationMachine.Init("Enemy");
+			}
 			InitCharacters();
 			EnemyXMLFile = null;
 		}
@@ -264,6 +267,7 @@ package managers
 			_hero.warSkillArray = warSkillsArray;
 			_hero.LevelUp();
 			_hero.characterIcon = new HeroIconMC();
+			_hero.animationMachine.Init(_hero.archetype.name);
 			_hero.SetSkillKnown();
 			_hero.currentPosition = 0;
 			
@@ -275,17 +279,18 @@ package managers
 			_lt1.warSkillArray = warSkillsArray;
 			_lt1.LevelUp();
 			_lt1.characterIcon = new Lt1IconMC;
+			_lt1.animationMachine.Init(_lt1.archetype.name);
 			_lt1.SetSkillKnown();
 			
 			_lt2.name = "ASSASSIN";
 			_lt2.id = "003";
 			_lt2.level = 0;
 			_lt2.archetype = archList[Main.ASSASSIN];
-			trace (_lt2.archetype.name);
 			_lt2.duelSkillArray = duelSkillsArray;
 			_lt2.warSkillArray = warSkillsArray;
 			_lt2.LevelUp();
 			_lt2.characterIcon = new Lt2IconMC;
+			_lt2.animationMachine.Init(_lt2.archetype.name);
 			_lt2.SetSkillKnown();
 			
 			_lt3.name = "WIZZARD";
@@ -296,6 +301,7 @@ package managers
 			_lt3.duelSkillArray = duelSkillsArray;
 			_lt3.LevelUp();
 			_lt3.characterIcon = new Lt3IconMC;
+			_lt3.animationMachine.Init(_lt3.archetype.name);
 			_lt3.SetSkillKnown();
 			
 			InitArmy();

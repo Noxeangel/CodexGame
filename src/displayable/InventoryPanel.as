@@ -23,12 +23,16 @@ package displayable
 		
 		private const LENGTH_OF_VIEW:int = 12;
 		
+		public var selectedItem:Item;
+		
 		public function InventoryPanel() 
 		{
 			ResetInventory();
 			addChild(view);
-			
-			addEventListener(MouseEvent.CLICK, _onClickHandler);
+			view.bottomScroller_mc.buttonMode = true;
+			view.bottomScroller_mc.addEventListener(MouseEvent.CLICK, _onClickHandler);
+			view.topScroller_mc.buttonMode = true;
+			view.topScroller_mc.addEventListener(MouseEvent.CLICK, _onClickHandler);
 		}
 		
 		private function _onClickHandler(e:MouseEvent):void 
@@ -40,6 +44,10 @@ package displayable
 			if (e.target == view.bottomScroller_mc)
 			{
 				ScrollDown();
+			}
+			if (e.currentTarget is ItemDisplayer)
+			{
+				selectedItem = (e.currentTarget as ItemDisplayer).holdedItem;
 			}
 		}
 		
@@ -75,7 +83,8 @@ package displayable
 				d.x = 20;
 				d.y = 20 + 50 * i;
 				i++;
-				addChild(d);
+				d.addEventListener(MouseEvent.CLICK, _onClickHandler);
+				view.addChild(d);
 			}
 		}
 		
@@ -83,7 +92,8 @@ package displayable
 		{
 			for each(var d:ItemDisplayer in itemDisplayersViewables_arr)
 			{
-				removeChild(d);
+				d.removeEventListener(MouseEvent.CLICK, _onClickHandler);
+				view.removeChild(d);
 			}
 			itemDisplayersViewables_arr = new Array();
 		}

@@ -5,6 +5,7 @@ package codex.characters
 	import flash.events.Event;
 	import flash.utils.Timer;
 	import events.AnimStateEvent;
+	import flash.utils.getQualifiedClassName;
 	/**
 	 * ...
 	 * @author Olivier
@@ -46,18 +47,83 @@ package codex.characters
 		//				Initialization function
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-		private function Init():void 
+		public function Init(archetypeName:String = "General"):void 
 		{
-
-			_idle = new AnimationHolder(HeroIdleAnimMC);
-			_attack = new AnimationHolder(HeroAttackAnimMC);
-			_attack.isOneShot = true;
-			_spell = new AnimationHolder(HeroIdleAnimMC);
-			_spell.isOneShot = true;
-			_damaged = new AnimationHolder(HeroIdleAnimMC);
-			_damaged.isOneShot = true;
-			_dead = new AnimationHolder(HeroIdleAnimMC);
-			_victory = new AnimationHolder(HeroIdleAnimMC);
+			_idle = null;
+			_attack = null;
+			_spell = null;
+			_damaged = null;
+			_dead = null;
+			_victory = null;
+			
+			while (this.numChildren != 0)
+			{
+				this.removeChildAt(0);
+			}
+			
+			_animationArray.length = 0;
+			
+			switch(archetypeName)
+			{
+				case "General":
+					_idle = new AnimationHolder(HeroIdleAnimMC);
+					_attack = new AnimationHolder(HeroAttackAnimMC);
+					_attack.isOneShot = true;
+					_spell = new AnimationHolder(HeroIdleAnimMC);
+					_spell.isOneShot = true;
+					_damaged = new AnimationHolder(HeroIdleAnimMC);
+					_damaged.isOneShot = true;
+					_dead = new AnimationHolder(HeroIdleAnimMC);
+					_victory = new AnimationHolder(HeroIdleAnimMC);
+					break;
+				case "Priest":
+					trace("AnimationMachine of priest init");
+					_idle = new AnimationHolder(PriestIdleAnimMC);
+					_attack = new AnimationHolder(PriestIdleAnimMC);
+					_attack.isOneShot = true;
+					_spell = new AnimationHolder(PriestIdleAnimMC);
+					_spell.isOneShot = true;
+					_damaged = new AnimationHolder(PriestIdleAnimMC);
+					_damaged.isOneShot = true;
+					_dead = new AnimationHolder(PriestIdleAnimMC);
+					_victory = new AnimationHolder(PriestIdleAnimMC);
+					trace(getQualifiedClassName(_idle.view));
+					break;
+				case "Assassin":
+					_idle = new AnimationHolder(AssassinAnimIdleMC);
+					_attack = new AnimationHolder(AssassinAnimIdleMC);
+					_attack.isOneShot = true;
+					_spell = new AnimationHolder(AssassinAnimIdleMC);
+					_spell.isOneShot = true;
+					_damaged = new AnimationHolder(AssassinAnimIdleMC);
+					_damaged.isOneShot = true;
+					_dead = new AnimationHolder(AssassinAnimIdleMC);
+					_victory = new AnimationHolder(AssassinAnimIdleMC);
+					break;	
+				case "Wizzard":
+					_idle = new AnimationHolder(WizzardIdleAnimMC);
+					_attack = new AnimationHolder(WizzardIdleAnimMC);
+					_attack.isOneShot = true;
+					_spell = new AnimationHolder(WizzardIdleAnimMC);
+					_spell.isOneShot = true;
+					_damaged = new AnimationHolder(WizzardIdleAnimMC);
+					_damaged.isOneShot = true;
+					_dead = new AnimationHolder(WizzardIdleAnimMC);
+					_victory = new AnimationHolder(WizzardIdleAnimMC);
+					break;	
+				default:
+					_idle = new AnimationHolder(EnemyIdleAnimMC);
+					_attack = new AnimationHolder(EnemyIdleAnimMC);
+					_attack.isOneShot = true;
+					_spell = new AnimationHolder(EnemyIdleAnimMC);
+					_spell.isOneShot = true;
+					_damaged = new AnimationHolder(EnemyIdleAnimMC);
+					_damaged.isOneShot = true;
+					_dead = new AnimationHolder(EnemyIdleAnimMC);
+					_victory = new AnimationHolder(EnemyIdleAnimMC);
+					break;
+			}
+			
 			
 			this.addEventListener(Event.ENTER_FRAME, _update);				//event listener of the update function
 

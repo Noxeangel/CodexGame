@@ -39,7 +39,7 @@ package managers
 				caster.removeMana(skill.cost);
 			}
 			
-			var damages:int  = int(skill.multiplicator * (caster.statsArray[skill.originStat] as BaseStat).finalAmmount * Math.random());
+			var damages:int  = int(skill.multiplicator * (caster.statsArray[skill.originStat] as BaseStat).finalAmmount * (Math.random()+0.5));
 			target.removeLife(damages);
 			var color:uint = 0xFF0000;
 			if (damages < 0)

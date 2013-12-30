@@ -54,7 +54,7 @@ package displayable
 		
 		private function _onComplete(e:Event = null):void 
 		{
-			this.parent.removeChild(this);
+			//this.parent.removeChild(this);
 		}
 		
 		 

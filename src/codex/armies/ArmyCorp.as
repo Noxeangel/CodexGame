@@ -14,7 +14,7 @@ package codex.armies
 		private var _maxNumber:int;
 		private var _currentNumber:int;
 		private var _isDead:Boolean = false;
-		
+		private var _animationMachine:ArmyAnimationMachine = new ArmyAnimationMachine();
 		private var _mod:int = 0;
 		
 		public function ArmyCorp()
@@ -28,6 +28,7 @@ package codex.armies
 			setNameFromType();
 			_maxNumber = max;
 			_currentNumber = max;
+			_animationMachine.Init(_type,_currentNumber);
 		}
 		
 		public function addMaxTroops(ammount:int):void
@@ -106,6 +107,16 @@ package codex.armies
 		public function set mod(value:int):void
 		{
 			_mod = value;
+		}
+		
+		public function get animationMachine():ArmyAnimationMachine 
+		{
+			return _animationMachine;
+		}
+		
+		public function set animationMachine(value:ArmyAnimationMachine):void 
+		{
+			_animationMachine = value;
 		}
 	
 	}

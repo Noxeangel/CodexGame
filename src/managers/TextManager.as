@@ -123,7 +123,7 @@ package managers
 			new Array("CON:", "CON:"),
 			new Array("INT:", "INT:"),
 			new Array("WIL:", "POU:"),
-			new Array("LUK:", "CHA:"),
+			new Array("CHA:", "CHA:"),
 			new Array("AGI:", "AGI:"),
 			
 			new Array("Play","Jouer"),

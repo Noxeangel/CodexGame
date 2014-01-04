@@ -41,6 +41,7 @@ package displayable
 			Main.isTutorial = view.tuto_cb.selectedIndex;
 			if (e.target == view.quit_btn)
 			{
+				Main.managers.SoundM.playSfx(Main.SFX_OK);
 				dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED,"MainMenu",true,true));
 			}
 			

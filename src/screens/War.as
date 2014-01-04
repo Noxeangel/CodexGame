@@ -7,12 +7,14 @@ package screens
 	import displayable.CharacterDisplay;
 	import displayable.Console;
 	import displayable.DuelCharacterDisplay;
+	import displayable.FadingText;
 	import displayable.LtChooser;
 	import displayable.SkillChooser;
 	import displayable.TargetChooser;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.utils.Timer;
 	import flash.events.TimerEvent;
@@ -23,6 +25,7 @@ package screens
 	import screens.FSM.DuelFSM.ChooseSkillEnemyState;
 	import screens.FSM.DuelFSM.ChooseSkillGeneralState;
 	import screens.FSM.DuelFSM.ChooseSkillLieutenantState;
+	import flash.ui.Keyboard;
 	/**
 	 * ...
 	 * @author Olivier
@@ -73,10 +76,10 @@ package screens
 		{
 			super(new DuelBackgroundMC); //Call the parent constructor
 			//This array informs the ScreenFSM the legals screen that could be displayed after this one
-			_switchTo = new Array("WorldMap","GameOver");
+			_switchTo = new Array("Duel","GameOver");
 			
 			//Name of the current screen (used by the FSM when it tries to switch to this screen
-			_screenName = "Duel";
+			_screenName = "War";
 
 		}
 		
@@ -127,6 +130,10 @@ package screens
 			
 			//
 			view.mouseEnabled = false;
+			
+			//DEBUG
+			stage.addEventListener(KeyboardEvent.KEY_UP, _onDebugSkip);
+			
 			
 			GenerateScreen();
 		}
@@ -181,7 +188,12 @@ package screens
 			_view.addChild(enemy.animationMachine);
 			_view.addChild(_skillChooser);
 			_view.addChild(_targetChooser);
-			LtChoiceScreenGeneration();
+			
+			//DEBUG TUTO
+			_view.addChild(new FadingText("DEBUG: War system is not fonctional at all \n Press Enter to go to Duel Screen", stage.stageWidth / 2, stage.stageHeight / 2 - 200, 15, 20, 0xFF0000));
+			
+			
+			//LtChoiceScreenGeneration();
 		}
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -555,6 +567,17 @@ package screens
 			
 		}
 		
+		private function _onDebugSkip(e:KeyboardEvent):void 
+		{
+			if (e.keyCode == Keyboard.SPACE)
+			{
+				//stage.removeEventListener(KeyboardEvent.KEY_UP, _onDebugSkip);
+				
+				dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED, "Duel", true, true));
+			}
+			
+		}
+		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				called when _view is removed from stage
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -563,17 +586,20 @@ package screens
 		{
 			Main.managers.Character.hero = hero;
 			
-			switch (lieutenant.name)
+			if (lieutenant != null)
 			{
-				case (Main.managers.Character.lt1.name):
-					Main.managers.Character.lt1 = lieutenant;
-					break;
-				case (Main.managers.Character.lt2.name):
-					Main.managers.Character.lt2 = lieutenant;
-					break;
-				case (Main.managers.Character.lt3.name):
-					Main.managers.Character.lt3 = lieutenant;
-					break;	
+				switch (lieutenant.name)
+				{
+					case (Main.managers.Character.lt1.name):
+						Main.managers.Character.lt1 = lieutenant;
+						break;
+					case (Main.managers.Character.lt2.name):
+						Main.managers.Character.lt2 = lieutenant;
+						break;
+					case (Main.managers.Character.lt3.name):
+						Main.managers.Character.lt3 = lieutenant;
+						break;	
+				}
 			}
 			
 			timer.removeEventListener(TimerEvent.TIMER, _update);

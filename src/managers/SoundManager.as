@@ -1,6 +1,8 @@
 package managers
 {
 	import flash.display.MovieClip;
+	import flash.events.DataEvent;
+	import flash.events.Event;
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.media.SoundMixer;
@@ -15,13 +17,14 @@ package managers
 	public class SoundManager extends MovieClip
 	{
 
-		private const MAX_TRACK:int = 16;
+		private const MAX_TRACK:int = 24;
 		//private var _tracks:Vector.<TransformedSound> = new Vector.<TransformedSound>(MAX_TRACK, true);
 		private var _tracks:Array = new Array();
 
 		// audio channel
 		private var _channelBGM:SoundChannel = new SoundChannel;
 		private var _channelSFX:SoundChannel = new SoundChannel;
+		
 		
 		// 
 		private var _currentBgmIdx:int = -1;
@@ -35,7 +38,9 @@ package managers
 
 		public function SoundManager()
 		{
+
 		}
+	
 
 		public function Init():void
 		{
@@ -44,17 +49,15 @@ package managers
 			{
 				_tracks.push(null);
 			}
-			
-			
-			
 		}
+		
+		
 
-		public function addRessource(sound:Sound, idx:uint = Main.ACTION1):void
+		public function addRessource(sound:Sound, idx:uint = Main.SFX_HEAL):void
 		{
 			if ( idx < _tracks.length )
 			{
 				_tracks[idx] = sound;
-				//trace(sound);
 			}
 			else
 			{
@@ -62,7 +65,7 @@ package managers
 			}
 		}
 		
-		public function playSfx(idx:int = Main.ACTION1):void
+		public function playSfx(idx:int = Main.SFX_HEAL):void
 		{
 			stSFX.volume = Main.sfxVolume;
 			var s:Sound = _tracks[idx];
@@ -72,12 +75,14 @@ package managers
 			}
 			else
 			{
-				_channelSFX.stop();
+				//_channelSFX.stop();
 				_channelSFX = s.play(0,1,stSFX);
 				
 			}
 			
 		}
+	
+		
 		
 		public function playBGM(idx:int = Main.BGM_MAIN_MENU, repeat:int = 999):void
 		{
@@ -122,6 +127,8 @@ package managers
 			}
 		
 		}
+		
+
 		
 		// STOP (not pause) EVERY SOUNDS
 		public function stopAllSounds():void

@@ -6,6 +6,7 @@ package screens
 	import displayable.CharacterDisplay;
 	import displayable.Console;
 	import displayable.DuelCharacterDisplay;
+	import displayable.FadingText;
 	import displayable.LtChooser;
 	import displayable.SkillChooser;
 	import displayable.TargetChooser;
@@ -22,6 +23,8 @@ package screens
 	import screens.FSM.DuelFSM.ChooseSkillEnemyState;
 	import screens.FSM.DuelFSM.ChooseSkillGeneralState;
 	import screens.FSM.DuelFSM.ChooseSkillLieutenantState;
+	import flash.events.KeyboardEvent;
+	import flash.ui.Keyboard;
 	/**
 	 * ...
 	 * @author Olivier
@@ -128,6 +131,10 @@ package screens
 			//
 			view.mouseEnabled = false;
 			
+			//DEBUG
+			stage.addEventListener(KeyboardEvent.KEY_UP, _onDebugSkip);
+			
+			
 			GenerateScreen();
 		}
 		
@@ -181,6 +188,10 @@ package screens
 			_view.addChild(enemy.animationMachine);
 			_view.addChild(_skillChooser);
 			_view.addChild(_targetChooser);
+			
+			//DEBUG TUTO
+			_view.addChild(new FadingText("DEBUG:Duel fight system is fonctional but not balanced yet \n Press Enter to go back to WorldMap or just play", stage.stageWidth / 2, stage.stageHeight / 2 - 200, 15, 20, 0xFF0000));
+			
 			LtChoiceScreenGeneration();
 		}
 		
@@ -200,7 +211,7 @@ package screens
 			//trace (e.target);
 			if (e.target == _ltChooser.view.lt1Icon_mc || e.target == _ltChooser.view.lt2Icon_mc || e.target == _ltChooser.view.lt3Icon_mc)
 			{
-				
+				Main.managers.SoundM.playSfx(Main.SFX_OK);
 				_ltChooser.removeEventListener(MouseEvent.CLICK, _onLtChoosed);
 				view.removeChild(_ltChooser);
 				
@@ -306,6 +317,7 @@ package screens
 		{
 			if (e.target == _skillChooser.view.skillButton1_mc || e.target == _skillChooser.view.skillButton2_mc || e.target == _skillChooser.view.skillButton3_mc)
 			{
+				Main.managers.SoundM.playSfx(Main.SFX_OK);
 				_skillChooser.visible = false;
 				_skillChooser.removeEventListener(MouseEvent.CLICK, _onGeneralSkillChoosed);
 				
@@ -333,7 +345,7 @@ package screens
 		{
 			if (e.target == _targetChooser.view.skillButton1_mc || e.target == _targetChooser.view.skillButton2_mc || e.target == _targetChooser.view.skillButton3_mc)
 			{
-			
+				Main.managers.SoundM.playSfx(Main.SFX_OK);
 				_targetChooser.visible = false;
 				_targetChooser.removeEventListener(MouseEvent.CLICK, _onGeneralTargetChoosed);
 				
@@ -380,6 +392,7 @@ package screens
 			
 			if (e.target == _skillChooser.view.skillButton1_mc || e.target == _skillChooser.view.skillButton2_mc || e.target == _skillChooser.view.skillButton3_mc)
 			{
+				Main.managers.SoundM.playSfx(Main.SFX_OK);
 				_skillChooser.visible = false;
 				_skillChooser.removeEventListener(MouseEvent.CLICK, _onLtSkillChoosed);
 				
@@ -406,7 +419,7 @@ package screens
 		{
 			if (e.target == _targetChooser.view.skillButton1_mc || e.target == _targetChooser.view.skillButton2_mc || e.target == _targetChooser.view.skillButton3_mc)
 			{
-			
+				Main.managers.SoundM.playSfx(Main.SFX_OK);
 				_targetChooser.visible = false;
 				_targetChooser.removeEventListener(MouseEvent.CLICK, _onLtTargetChoosed);
 				
@@ -454,6 +467,7 @@ package screens
 			
 			if (e.target == _skillChooser.view.skillButton1_mc || e.target == _skillChooser.view.skillButton2_mc || e.target == _skillChooser.view.skillButton3_mc)
 			{
+				Main.managers.SoundM.playSfx(Main.SFX_OK);
 				_skillChooser.visible = false;
 				_skillChooser.removeEventListener(MouseEvent.CLICK, _onEnemySkillChoosed);
 				
@@ -480,7 +494,7 @@ package screens
 		{
 			if (e.target == _targetChooser.view.skillButton1_mc || e.target == _targetChooser.view.skillButton2_mc || e.target == _targetChooser.view.skillButton3_mc)
 			{
-			
+				Main.managers.SoundM.playSfx(Main.SFX_OK);
 				_targetChooser.visible = false;
 				_targetChooser.removeEventListener(MouseEvent.CLICK, _onEnemyTargetChoosed);
 				
@@ -557,7 +571,16 @@ package screens
 			}
 			return false;
 		}
-
+		private function _onDebugSkip(e:KeyboardEvent):void 
+		{
+			if (e.keyCode == Keyboard.SPACE)
+			{
+				//stage.removeEventListener(KeyboardEvent.KEY_UP, _onDebugSkip);
+				
+				dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED, "WorldMap", true, true));
+			}
+			
+		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				called when _view is removed from stage
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -565,19 +588,22 @@ package screens
 		override public function end():void
 		{
 			Main.managers.Character.hero = hero;
-			
-			switch (lieutenant.name)
+			if (lieutenant != null)
 			{
-				case (Main.managers.Character.lt1.name):
-					Main.managers.Character.lt1 = lieutenant;
-					break;
-				case (Main.managers.Character.lt2.name):
-					Main.managers.Character.lt2 = lieutenant;
-					break;
-				case (Main.managers.Character.lt3.name):
-					Main.managers.Character.lt3 = lieutenant;
-					break;	
+				switch (lieutenant.name)
+				{
+					case (Main.managers.Character.lt1.name):
+						Main.managers.Character.lt1 = lieutenant;
+						break;
+					case (Main.managers.Character.lt2.name):
+						Main.managers.Character.lt2 = lieutenant;
+						break;
+					case (Main.managers.Character.lt3.name):
+						Main.managers.Character.lt3 = lieutenant;
+						break;	
+				}
 			}
+			
 			
 			timer.removeEventListener(TimerEvent.TIMER, _update);
 			super.end();

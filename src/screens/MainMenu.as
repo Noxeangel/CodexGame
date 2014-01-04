@@ -103,17 +103,21 @@ package screens
 			switch (e.currentTarget)
 			{
 				case play_btn:	
+					Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 					dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED,"Intro",true,true));
 					break;
 				case options_btn:	
+					Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 					option_win.Init();
 					option_win.visible = true;
 					break;
 				case load_btn:	
+					Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 					dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED,"WorldMap",true,true));
 					break;
 					
 				case quit_btn:
+					Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 					fscommand("quit");
 					break;
 			}

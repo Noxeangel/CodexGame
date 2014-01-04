@@ -1,6 +1,7 @@
 package screens
 {
 	import displayable.PaperButtonLeft;
+	import displayable.TalkConsole;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import events.ScreenEvents;
@@ -13,6 +14,8 @@ package screens
 	{
 		public var skipAll_btn:PaperButtonLeft;
 		public var skip_btn:PaperButtonLeft;
+		
+		
 		
 		public function Intro()
 		{
@@ -32,11 +35,14 @@ package screens
 		override protected function onViewReady(e:Event):void
 		{
 			super.onViewReady(e);
+			view.gotoAndStop(1);
 			Init();
 		}
 		
 		private function Init():void
 		{
+			
+			
 			skip_btn = new PaperButtonLeft();
 			skip_btn.SetPaperButton("Skip Sequence",9999,MoveIconMC);
 			skip_btn.x = 0;
@@ -46,17 +52,21 @@ package screens
 			skipAll_btn.SetPaperButton("Skip All Intro",9999,MoveIconMC);
 			skipAll_btn.x = 0;
 			skipAll_btn.y = stage.stageHeight - skipAll_btn.height ;
+			view.addEventListener(Event.FRAME_CONSTRUCTED, GenerateScreen );
 			
+			skip_btn.addEventListener(MouseEvent.CLICK, _onClickHandler); // [d]
+			skipAll_btn.addEventListener(MouseEvent.CLICK, _onClickHandler); // [d]
 			
 			GenerateScreen();
 		}
 		
-		private function GenerateScreen():void
+	
+		private function GenerateScreen(e:Event = null):void
 		{
 			view.addChild(skip_btn);
 			view.addChild(skipAll_btn);
-			skip_btn.addEventListener(MouseEvent.CLICK, _onClickHandler); // [d]
-			skipAll_btn.addEventListener(MouseEvent.CLICK, _onClickHandler); // [d]
+			
+			
 			
 		}
 		
@@ -66,10 +76,10 @@ package screens
 			switch(e.currentTarget)
 			{
 				case  skip_btn:
-					
+					Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 					if (view.currentFrame < view.totalFrames)
 					{
-						view.gotoAndPlay(view.currentFrame + 1);
+						view.gotoAndStop(view.currentFrame + 1);
 					}
 					else
 					{
@@ -77,7 +87,7 @@ package screens
 					}
 					break;
 				case skipAll_btn:
-					
+					Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 					dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED, "WorldMap", true, true));
 					break;
 			}

@@ -19,6 +19,9 @@ package codex.levels
 		
 		private var _searchItem:Inventory = new Inventory();
 		
+		private var _isPropagandaDone:Boolean = false;
+		private var _isSearchDone:Boolean = false;
+		
 		private var _background:MovieClip = new MovieClip();
 		private var _mapIcon:MovieClip = new TownMC();
 		
@@ -150,6 +153,26 @@ package codex.levels
 		public function set neighbours(value:Array):void 
 		{
 			_neighbours = value;
+		}
+		
+		public function get isPropagandaDone():Boolean 
+		{
+			return _isPropagandaDone;
+		}
+		
+		public function set isPropagandaDone(value:Boolean):void 
+		{
+			_isPropagandaDone = value;
+		}
+		
+		public function get isSearchDone():Boolean 
+		{
+			return _isSearchDone;
+		}
+		
+		public function set isSearchDone(value:Boolean):void 
+		{
+			_isSearchDone = value;
 		}
 	
 	}

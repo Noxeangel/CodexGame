@@ -4,6 +4,7 @@ package displayable
 	import flash.events.Event;
 	import com.greensock.*;
 	import com.greensock.easing.*;
+	import Date;
 	/**
 	 * ...
 	 * @author Olivier
@@ -12,6 +13,7 @@ package displayable
 	{
 		
 		private var _view:Console_Field = new Console_Field();
+		private var date:Date = new Date();
 		
 		public function Console() 
 		{
@@ -36,6 +38,9 @@ package displayable
 		
 		public function DisplayOnConsole(line:String):void
 		{
+			date = new Date();
+			_view.console_txt.text += new String(date.toTimeString().slice(0 ,date.toTimeString().length - 8 ));
+			_view.console_txt.text += "| ";
 			_view.console_txt.text += line;
 			_view.console_txt.text += " \n";
 			_view.console_txt.scrollV += 1;

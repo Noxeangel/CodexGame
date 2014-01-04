@@ -34,6 +34,8 @@ package managers
 		
 		public function ApplyAction(caster:Character, target:Character, skill:Skill, view:MovieClip):void
 		{
+			Main.managers.SoundM.playSfx(Main.SFX_HEAL);
+
 			if (skill.hasCost)
 			{
 				caster.removeMana(skill.cost);

@@ -132,19 +132,18 @@ package
 		public static const BGM_WAR:int = 4;
 		public static const BGM_GAME_OVER:int = 5;
 		
-		//public static const BONUS1:int = 4;
-		//public static const BONUS2:int = 5;
+
 		public static const BONUS3:int = 6;
 		public static const BONUS4:int = 7;
 		
-		public static const ACTION1:int = 8;
+		public static const SFX_HEAL:int = 8;
 		public static const ACTION2:int = 9;
 		public static const ACTION3:int = 10;
 		public static const ACTION4:int = 11;
 		
-		public static const SPECIAL1:int = 12;
-		public static const SPECIAL2:int = 13;
-		public static const SPECIAL3:int = 14;
+		public static const SFX_SELECT:int = 12;
+		public static const SFX_OK:int = 13;
+		public static const SFX_NO:int = 14;
 		public static const SPECIAL4:int = 15;
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,6 +171,18 @@ package
 		
 		private var req6:URLRequest = new URLRequest("assets/sound/GameOver.mp3");
 		private var gameOver_bgm:Sound =  new Sound(req6);
+		
+		private var req7:URLRequest = new URLRequest("assets/sound/Select.mp3");
+		private var select_sfx:Sound =  new Sound(req7);
+		
+		private var req8:URLRequest = new URLRequest("assets/sound/OK.mp3");
+		private var ok_sfx:Sound =  new Sound(req8);
+		
+		private var req9:URLRequest = new URLRequest("assets/sound/No.mp3");
+		private var no_sfx:Sound =  new Sound(req9);
+		
+		private var req10:URLRequest = new URLRequest("assets/sound/Heal.mp3");
+		private var heal_sfx:Sound =  new Sound(req10);
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Global XML Files that store the datas
@@ -342,7 +353,10 @@ package
 			Main.managers.SoundM.addRessource(war_bgm, Main.BGM_WAR);
 			Main.managers.SoundM.addRessource(gameOver_bgm, Main.BGM_GAME_OVER);
 			Main.managers.SoundM.addRessource(Paper_sfx, Main.BIP);
-			
+			Main.managers.SoundM.addRessource(ok_sfx, Main.SFX_OK);
+			Main.managers.SoundM.addRessource(no_sfx, Main.SFX_NO);
+			Main.managers.SoundM.addRessource(select_sfx, Main.SFX_SELECT);
+			Main.managers.SoundM.addRessource(heal_sfx, Main.SFX_HEAL);
 			_onInitComplete();
 		}
 		
@@ -380,7 +394,7 @@ package
 							currentScreen = new MainMenu();
 							break;
 						case "War": 
-							currentScreen = new Intro();
+							currentScreen = new War();
 							break;
 						case "Duel": 
 							currentScreen = new Duel();

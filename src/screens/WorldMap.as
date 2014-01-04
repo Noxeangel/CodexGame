@@ -9,6 +9,8 @@ package screens
 	import displayable.InventoryPanel;
 	import displayable.PaperButtonLeft;
 	import displayable.StatusPanel;
+	import displayable.TalkConsole;
+	import displayable.TalkScreen;
 	import displayable.TurnCounter;
 	import displayable.WorldMapMover;
 	import codex.items.Consumable;
@@ -16,12 +18,14 @@ package screens
 	import codex.levels.Level;
 	import flash.display.MovieClip;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import Main;
 	import managers.GlobalManager;
 	import managers.TextManager;
 	import events.ScreenEvents;
 	import events.CharacterDisplayEvent;
+	import flash.ui.Keyboard;
 	/**
 	 * ...
 	 * @author Olivier
@@ -93,7 +97,10 @@ package screens
 		//Turn counter
 		private var turnCounter:TurnCounter;
 		private var mover:WorldMapMover;
-
+		//Talk screen
+		public var talkScreen:TalkScreen = new TalkScreen();
+		public var isTalkScreenDisplayed:Boolean = false;
+		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Constructor of the WorldMap Screen
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,8 +113,8 @@ package screens
 			_switchTo = new Array(	"Duel",
 									"War",
 									"GameOver",
-									"MainMenu",
-									"Duel2");
+									"MainMenu"
+									);
 			//Name of the current screen (used by the FSM when it tries to switch to this screen)
 			_screenName = "WorldMap";
 
@@ -150,6 +157,8 @@ package screens
 			view.addEventListener(CharacterDisplayEvent.DISPLAY, _onDisplayStatusPanel);
 			view.addEventListener(CharacterDisplayEvent.HIDE, _onDisplayStatusPanel);
 
+			talkScreen.addEventListener(MouseEvent.CLICK, _onTalkScreenClicked);
+			
 			//Initializing the console
 			console = new Console();
 			console.x = (stage.stageWidth  ) / 2;
@@ -167,7 +176,7 @@ package screens
 			turnCounter.addEventListener(MouseEvent.CLICK, _onClickHandler);
 			
 			//Set the current number of action points
-			currentActionPoints = maxActionPoints  +1 ;
+			currentActionPoints = maxActionPoints   ;
 			RemoveActionPoints(0);
 			
 			//Set the current turn number
@@ -258,6 +267,8 @@ package screens
 		
 		
 		
+		
+		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Set up and add to stage the dynamic displayable objects
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -266,11 +277,6 @@ package screens
 		{
 			//Simple counter variable for the for loops
 			var i:int;
-			//Add buttons to stage
-			for (i = buttonsData_arr.length - 1; i >= 0 ; i-- )
-			{
-				view.addChildAt(buttons_arr[i],view.numChildren);
-			}
 			
 			//Add character display to stage
 			for (i = characterDisplays_arr.length - 1; i >= 0 ; i--)
@@ -285,7 +291,7 @@ package screens
 				view.addChildAt(armyDisplays_arr[i],view.numChildren);
 			}
 			UpdateArmyDisplays();
-			
+			/*
 			//Add bottom screen displays
 			view.addChildAt(console,15);
 			view.addChildAt(actionCounter, 15);
@@ -295,7 +301,29 @@ package screens
 			view.addChildAt(statusPanel, 15);
 			
 			//Add inventory to stage and hide it
-			view.addChildAt(inventory,15);
+			view.addChildAt(inventory, 15);
+			*/
+			view.addChild(console);
+			view.addChild(actionCounter);
+			view.addChild(turnCounter);
+			
+			//Add status panel to stage
+			view.addChild(statusPanel);
+			
+			//Add buttons to stage
+			for (i = buttonsData_arr.length - 1; i >= 0 ; i-- )
+			{
+				view.addChildAt(buttons_arr[i],view.numChildren);
+			}
+			
+			
+			//Add talks screen to stage and hide it
+			view.addChild(talkScreen);
+			talkScreen.visible = false;
+			
+			
+			//Add inventory to stage and hide it
+			view.addChildAt(inventory, 15);
 			inventory.visible = isInventoryPanelDisplayed;
 			
 
@@ -318,9 +346,14 @@ package screens
 
 			worldMapBackground.addChild(mover);
 			worldMapBackground.addChild(playerIconOnMap);
-			moveFunction(Main.managers.Level.currentLocation);
+			
+			playerIconOnMap.x = Main.managers.Level.Levels[Main.managers.Level.currentLocation ].mapIcon.x;
+			playerIconOnMap.y = Main.managers.Level.Levels[Main.managers.Level.currentLocation ].mapIcon.y  ;
+			mover.SetWorldMapMover(Main.managers.Level.Levels[Main.managers.Level.currentLocation]);
+			
 			//trace("Current location on WorldMap Screen generation : "+Main.managers.Level.currentLocation);
 			HideWorldMapIcons();
+			stage.addEventListener(KeyboardEvent.KEY_UP, _onDebugSkip);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -348,7 +381,18 @@ package screens
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Event Handlers
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
-		
+		private function _onDebugSkip(e:KeyboardEvent):void 
+		{
+			if (e.keyCode == Keyboard.SPACE)
+			{
+				//stage.removeEventListener(KeyboardEvent.KEY_UP, _onDebugSkip);
+				_goToScreen = "GameOver";
+				worldMapBackground.gotoAndPlay(26);
+				HideWorldMapIcons();
+				HideBottom();
+			}
+			
+		}
 		private function _Update(e:Event):void 
 		{
 			
@@ -374,6 +418,9 @@ package screens
 					case "Duel":
 						dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED, "Duel", true, true));
 						break;
+					case "GameOver":
+						dispatchEvent(new ScreenEvents(ScreenEvents.DESTROYED, "GameOver", true, true));
+						break;
 				}
 				
 			}
@@ -386,64 +433,88 @@ package screens
 				case (buttons_arr[0]):
 						if (currentActionPoints >= 1)
 						{
+							Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 							ShowWorldMapIcons();
 						}
 						else
 						{
+							Main.managers.SoundM.playSfx(Main.SFX_NO);
 							console.DisplayOnConsole("Pas assez de points d'action");
 						}
 						break;	
 				case (buttons_arr[1]):
 					if (currentActionPoints >= 1)
 					{
+						Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 						searchFunction(Main.managers.Level.currentLocation);
 					}
 					else
 					{
+						Main.managers.SoundM.playSfx(Main.SFX_NO);
 						console.DisplayOnConsole("Pas assez de points d'action");
 					}
 					break;	
 				case (buttons_arr[2]):
 					if (currentActionPoints >= 1)
 					{
+						Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 						campFunction(Main.managers.Level.currentLocation);
 					}
 					else
 					{
+						Main.managers.SoundM.playSfx(Main.SFX_NO);
 						console.DisplayOnConsole("Pas assez de points d'action");
 					}
 					break;	
 				case (buttons_arr[3]):
 					if (currentActionPoints >= 3)
 					{
+						Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 						propagandaFunction(Main.managers.Level.currentLocation);
 					}
 					else
 					{
+						Main.managers.SoundM.playSfx(Main.SFX_NO);
 						console.DisplayOnConsole("Pas assez de points d'action");
 					}
 					break;	
 				case (buttons_arr[4]):
 					if (isInventoryPanelDisplayed)
 					{
+						Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 						isInventoryPanelDisplayed = false;
 						inventory.visible = isInventoryPanelDisplayed;
 					}else
 					{
+						Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 						isInventoryPanelDisplayed = true;
 						inventory.visible = isInventoryPanelDisplayed;
 					}
 					break;	
 				case (buttons_arr[5]):
+					Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 					Main.managers.Character.hero.ChangeWeapon(Main.managers.Item.returnWeapon("W005"));
 					Main.managers.Character.hero.ChangeArmor(Main.managers.Item.returnArmor("A003"));
 					Main.managers.Character.hero.ChangeAccessory(Main.managers.Item.returnAccessory("C015"));
 
 					break;
 				case(buttons_arr[6]):
-					console.DisplayOnConsole("parler_btn clicked");
+					Main.managers.SoundM.playSfx(Main.SFX_SELECT);
+					if (!isTalkScreenDisplayed)
+					{
+						isTalkScreenDisplayed = true;
+						talkScreen.visible = true;
+						talkFunction();
+					}else
+					{
+						
+						isTalkScreenDisplayed = false;
+						talkScreen.visible = false;
+					}
+					
 					break;	
 				case(buttons_arr[7]):
+					Main.managers.SoundM.playSfx(Main.SFX_SELECT);
 					_goToScreen = "MainMenu";
 					worldMapBackground.gotoAndPlay(26);
 					HideWorldMapIcons();
@@ -552,31 +623,53 @@ package screens
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Custom function: manage click on towns icons
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		private function checkValidMove(index:int):Boolean
+		{
+			for each(var id:String in (Main.managers.Level.Levels[Main.managers.Level.currentLocation] as Level).neighbours)
+			{
+				if ( id == Main.managers.Level.Levels[index].id)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		
 		private function moveFunction(index:int):void
 		{
-			Main.managers.Level.currentLocation = Main.managers.Level.Levels[index].townIndex;
-			
-			playerIconOnMap.x = Main.managers.Level.Levels[Main.managers.Level.currentLocation ].mapIcon.x;
-			playerIconOnMap.y = Main.managers.Level.Levels[Main.managers.Level.currentLocation ].mapIcon.y  ;
-			mover.SetWorldMapMover(Main.managers.Level.Levels[index]);
-			
-			
-			if (Main.managers.Level.Levels[index].isAlly)
+			if ( checkValidMove(index))
 			{
-				console.DisplayOnConsole(new String("Vous vous déplacez vers " + Main.managers.Level.Levels[index].name));
-				RemoveActionPoints(1);
+				Main.managers.SoundM.playSfx(Main.SFX_OK);
+				Main.managers.Level.currentLocation = Main.managers.Level.Levels[index].townIndex;
+			
+				playerIconOnMap.x = Main.managers.Level.Levels[Main.managers.Level.currentLocation ].mapIcon.x;
+				playerIconOnMap.y = Main.managers.Level.Levels[Main.managers.Level.currentLocation ].mapIcon.y  ;
+				mover.SetWorldMapMover(Main.managers.Level.Levels[index]);
 				
+				
+				if (Main.managers.Level.Levels[index].isAlly)
+				{
+					console.DisplayOnConsole(new String("Vous vous déplacez vers " + Main.managers.Level.Levels[index].name));
+					RemoveActionPoints(1);
+					
+				}
+				else
+				{
+
+					Main.managers.Level.Levels[index].isAlly = true;
+					Main.managers.Level.Levels[index].mapIcon.gotoAndStop(1);
+					_goToScreen = "War";
+					worldMapBackground.gotoAndPlay(26);
+					HideWorldMapIcons();
+					HideBottom();
+				}
 			}
 			else
 			{
-
-				Main.managers.Level.Levels[index].isAlly = true;
-				Main.managers.Level.Levels[index].mapIcon.gotoAndStop(1);
-				_goToScreen = "Duel";
-				worldMapBackground.gotoAndPlay(26);
-				HideWorldMapIcons();
-				HideBottom();
+				Main.managers.SoundM.playSfx(Main.SFX_NO);
+				console.DisplayOnConsole(new String("Vous ne pouvez pas vous déplacer vers " + Main.managers.Level.Levels[index].name));
 			}
+			
 
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -584,23 +677,44 @@ package screens
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		private function propagandaFunction(index:int):void
 		{
-			RemoveActionPoints(3);
-			Main.managers.Character.army.archers.addMaxTroops(Main.managers.Level.Levels[index].propaganda[Main.ARCHER]);
-			Main.managers.Character.army.lancers.addMaxTroops(Main.managers.Level.Levels[index].propaganda[Main.LANCER]);
-			Main.managers.Character.army.knights.addMaxTroops(Main.managers.Level.Levels[index].propaganda[Main.KNIGHT]);
-			UpdateArmyDisplays();
-			console.DisplayOnConsole(new String("Vous Haranguez les habitants de " + Main.managers.Level.Levels[index].name));
+			if (Main.managers.Level.Levels[index].isPropagandaDone)
+			{
+				Main.managers.SoundM.playSfx(Main.SFX_NO);
+				console.DisplayOnConsole(new String("Vous ne pouvez plus recruter ici "));
+			}
+			else
+			{
+				
+				Main.managers.Level.Levels[index].isPropagandaDone = true;
+				RemoveActionPoints(3);
+				Main.managers.Character.army.archers.addMaxTroops(Main.managers.Level.Levels[index].propaganda[Main.ARCHER]);
+				Main.managers.Character.army.lancers.addMaxTroops(Main.managers.Level.Levels[index].propaganda[Main.LANCER]);
+				Main.managers.Character.army.knights.addMaxTroops(Main.managers.Level.Levels[index].propaganda[Main.KNIGHT]);
+				UpdateArmyDisplays();
+				console.DisplayOnConsole(new String("Vous Haranguez les habitants de " + Main.managers.Level.Levels[index].name));
+			}
+			
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Custom function: manage search button click
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		private function searchFunction(index:int):void
 		{
-			RemoveActionPoints(1);
-			Main.managers.Item.partyInventory.AddInventory(Main.managers.Level.Levels[index].searchItem);
-			inventory.ResetInventory();
-			inventory.SetInventoryPanel(Main.managers.Item.partyInventory.ReturnItemArray());
-			console.DisplayOnConsole(new String("Vous fouillez le champs de bataille de " + Main.managers.Level.Levels[index].name));
+			if (Main.managers.Level.Levels[index].isSearchDone)
+			{
+				Main.managers.SoundM.playSfx(Main.SFX_NO);
+				console.DisplayOnConsole(new String("Vous ne pouvez plus fouiller ici "));
+			}
+			else
+			{
+				
+				Main.managers.Level.Levels[index].isSearchDone = true;
+				RemoveActionPoints(1);
+				Main.managers.Item.partyInventory.AddInventory(Main.managers.Level.Levels[index].searchItem);
+				inventory.ResetInventory();
+				inventory.SetInventoryPanel(Main.managers.Item.partyInventory.ReturnItemArray());
+				console.DisplayOnConsole(new String("Vous fouillez le champs de bataille de " + Main.managers.Level.Levels[index].name));
+			}
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Custom function: manage camp button click
@@ -618,6 +732,28 @@ package screens
 			ChangeTurn();
 			UpdateCharacterDisplays();
 		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//				Custom function: manage talk button click
+		//				DEBUG
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		private function talkFunction():void
+		{
+			talkScreen.Init("TESTTESTESTESTETSTSTSTSTSTSTSTSTSTSTSTSTSTSTSTST");
+
+		}
+		private function _onTalkScreenClicked(e:MouseEvent):void 
+		{
+			if (e.target == talkScreen.view.quit_mc)
+			{
+				talkScreen.End();
+				isTalkScreenDisplayed = false;
+				talkScreen.visible = false;
+			}
+			
+		}
+		
 		
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////

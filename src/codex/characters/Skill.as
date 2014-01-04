@@ -29,6 +29,7 @@ package codex.characters
 		private var _cost:int;
 		private var _costVital:int;
 		
+		
 		public function Skill() 
 		{
 			_id = "";

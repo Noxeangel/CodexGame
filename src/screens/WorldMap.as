@@ -734,7 +734,7 @@ package screens
 		
 		private function talkFunction():void
 		{
-			talkScreen.Init(Main.managers.Talk.debugDialog);
+			talkScreen.Init(Main.managers.Talk.units[0]);
 
 		}
 		private function _onTalkScreenClicked(e:MouseEvent):void 

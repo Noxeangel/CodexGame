@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+	<DIALOG_UNIT ID="D666">
+		<DIALOG_LINE>
+			<BACKGROUND>1</BACKGROUND>
+			<LEFT_TALKER NAME="Hero" PORTRAIT="1" MOOD="5"/>
+			<RIGHT_TALKER NAME="Priest" PORTRAIT="2" MOOD="15"/>
+			<LEFT_SPEAK>1</LEFT_SPEAK>
+			<SKIPPABLE>1</SKIPPABLE>
+			<LANGUAGE0>this is a text dialog whose goal is to test the newly created classes DialogLine and DialogUnit</LANGUAGE0>
+			<LANGUAGE1>Ceci est une dialogue de test dont le but est de tester les classes nouvellements crées de DialogLine et DialogUnit</LANGUAGE1>
+		</DIALOG_LINE>
+		<DIALOG_LINE>
+			<BACKGROUND>1</BACKGROUND>
+			<LEFT_TALKER NAME="Hero" PORTRAIT="1" MOOD="9"/>
+			<RIGHT_TALKER NAME="Priest" PORTRAIT="2" MOOD="14"/>
+			<LEFT_SPEAK>0</LEFT_SPEAK>
+			<SKIPPABLE>1</SKIPPABLE>
+			<LANGUAGE0>this is a text dialog whose goal is to test the newly created classes DialogLine and DialogUnit</LANGUAGE0>
+			<LANGUAGE1>Ceci est une dialogue de test dont le but est de tester les classes nouvellements crées de DialogLine et DialogUnit</LANGUAGE1>
+		</DIALOG_LINE>
+		<DIALOG_LINE>
+			<BACKGROUND>1</BACKGROUND>
+			<LEFT_TALKER NAME="Hero" PORTRAIT="1" MOOD="3"/>
+			<RIGHT_TALKER NAME="Priest" PORTRAIT="2" MOOD="2"/>
+			<LEFT_SPEAK>1</LEFT_SPEAK>
+			<SKIPPABLE>1</SKIPPABLE>
+			<LANGUAGE0>this is a text dialog whose goal is to test the newly created classes DialogLine and DialogUnit</LANGUAGE0>
+			<LANGUAGE1>Ceci est une dialogue de test dont le but est de tester les classes nouvellements crées de DialogLine et DialogUnit</LANGUAGE1>
+		</DIALOG_LINE>
+		<DIALOG_LINE>
+			<BACKGROUND>1</BACKGROUND>
+			<LEFT_TALKER NAME="Hero" PORTRAIT="1" MOOD="7"/>
+			<RIGHT_TALKER NAME="Priest" PORTRAIT="2" MOOD="12"/>
+			<LEFT_SPEAK>0</LEFT_SPEAK>
+			<SKIPPABLE>1</SKIPPABLE>
+			<LANGUAGE0>this is a text dialog whose goal is to test the newly created classes DialogLine and DialogUnit</LANGUAGE0>
+			<LANGUAGE1>Ceci est une dialogue de test dont le but est de tester les classes nouvellements crées de DialogLine et DialogUnit</LANGUAGE1>
+		</DIALOG_LINE>
+	</DIALOG_UNIT>
+</data>

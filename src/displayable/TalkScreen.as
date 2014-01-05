@@ -58,8 +58,9 @@ package displayable
 			view.right_mc.gotoAndStop((currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).rightTalkerPortrait);
 			view.left_mc.gotoAndStop((currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).leftTalkerPortrait);
 			
-			view.right_mc.heroTalk_mc.gotoAndStop((currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).rightTalkerMood);
-			view.left_mc.heroTalk_mc.gotoAndStop((currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).leftTalkerMood);
+			view.right_mc.getPortrait((currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).rightTalkerPortrait).gotoAndStop((currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).rightTalkerMood);
+			view.left_mc.getPortrait((currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).leftTalkerPortrait).gotoAndStop((currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).leftTalkerMood);
+			
 			
 			var leftName:String;
 			var rightName:String;
@@ -75,7 +76,7 @@ package displayable
 				rightName = (currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).rightTalkerName;
 			}
 			
-			talkConsole.Init((currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).dialog,5.0,(currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).isSkippable, leftName, rightName);
+			talkConsole.Init((currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).dialog[Main.language],5.0,(currentDialogUnit.lines[currentDialogLineIndex] as DialogLine).isSkippable, leftName, rightName);
 			talkConsole.Start();
 		}
 		

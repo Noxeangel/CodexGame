@@ -6,6 +6,7 @@ package codex.talk
 	 */
 	public class DialogUnit 
 	{
+		private var _id:String = "DEBUG_ID";
 		private var _lines:Array = new Array();
 		
 		public function DialogUnit() 
@@ -21,6 +22,16 @@ package codex.talk
 		public function set lines(value:Array):void 
 		{
 			_lines = value;
+		}
+		
+		public function get id():String 
+		{
+			return _id;
+		}
+		
+		public function set id(value:String):void 
+		{
+			_id = value;
 		}
 		
 	}

@@ -198,11 +198,14 @@ package
 		public static var ArchetypeXMLFile:XML;
 		
 		private const SKILLS_XML_FILE_PATH:String = "assets/data/XML/Skills.xml"; //Path to the xml file which contains the data of the skills
-		public static var SkillXMLFile:XML
+		public static var SkillXMLFile:XML;
 		
 		private const ENEMIES_XML_FILE_PATH:String = "assets/data/XML/Enemies.xml"; //Path to the xml file which contains the data of the enemies
-		public static var EnemyXMLFile:XML
-
+		public static var EnemyXMLFile:XML;
+		
+		private const TALK_XML_FILE_PATH:String = "assets/data/XML/Talk.xml"; //Path to the xml file which contains the data of the dialogs
+		public static var TalkXMLFile:XML;
+		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Access Point to Manager Singleton
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,9 +335,9 @@ package
 			}
 			var loader:URLLoader = new URLLoader();
 			loader.load(new URLRequest(LEVELS_XML_FILE_PATH));
-			loader.addEventListener(Event.COMPLETE, InitManagers);
+			loader.addEventListener(Event.COMPLETE, LoadDialogs);
 		}
-		private function InitManagers(e:Event):void 
+		private function LoadDialogs(e:Event):void
 		{
 			if (e.target.data != null)
 			{
@@ -343,6 +346,21 @@ package
 			else
 			{
 				throw new Error("#No data in LevelsXMLFile", "#0001");
+				return;
+			}
+			var loader:URLLoader = new URLLoader();
+			loader.load(new URLRequest(TALK_XML_FILE_PATH));
+			loader.addEventListener(Event.COMPLETE, InitManagers);
+		}
+		private function InitManagers(e:Event):void 
+		{
+			if (e.target.data != null)
+			{
+				TalkXMLFile = new XML(e.target.data);
+			}
+			else
+			{
+				throw new Error("#No data in TalkXMLFile", "#0001");
 				return;
 			}
 			Main.managers.Init();

@@ -14,7 +14,7 @@ package codex.talk
 		private var _leftTalkerMood:int;
 		private var _leftTalkerPortrait:int;
 		
-		private var _dialog:String;
+		private var _dialog:Array = new Array();
 		private var _isLeftTalkerTalk:Boolean;
 		private var _isSkippable:Boolean;
 		
@@ -85,12 +85,12 @@ package codex.talk
 			_leftTalkerPortrait = value;
 		}
 		
-		public function get dialog():String 
+		public function get dialog():Array 
 		{
 			return _dialog;
 		}
 		
-		public function set dialog(value:String):void 
+		public function set dialog(value:Array):void 
 		{
 			_dialog = value;
 		}

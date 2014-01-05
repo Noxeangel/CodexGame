@@ -1,5 +1,6 @@
 package displayable 
 {
+	import events.TalkEvent;
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
@@ -18,7 +19,7 @@ package displayable
 		private var currentIndex:int;
 		private var totalText:String;
 		public var view:TalkConsoleMC;
-		
+		private var _noClick:Boolean = true;
 		public function TalkConsole() 
 		{
 			view = new TalkConsoleMC();
@@ -26,12 +27,15 @@ package displayable
 			view.console_txt.mouseEnabled = false;
 		}
 		
-		public function Init(text:String, duration:Number = BASIC_DURATION, isSkippable:Boolean = true):void
+		public function Init(text:String, duration:Number = BASIC_DURATION, isSkippable:Boolean = true ,left:String = "", right:String = ""):void
 		{
 			totalText = text;
-			
+			_noClick = true;
 			timer = new Timer((duration * 1000) / text.length, text.length);
 			timer.addEventListener(TimerEvent.TIMER, _onUpdate);
+			
+			view.leftTalker_txt.text = left;
+			view.rightTalker_txt.text = right;
 			
 			if (isSkippable)
 			{
@@ -48,8 +52,17 @@ package displayable
 		
 		private function _onClicked(e:MouseEvent):void 
 		{
-			
 			End();
+			if (_noClick)
+			{
+				_noClick = false;
+			}
+			else
+			{
+				view.removeEventListener(MouseEvent.CLICK, _onClicked);
+				this.dispatchEvent(new TalkEvent(TalkEvent.NEXT));
+			}
+			
 		}
 		
 		
@@ -57,13 +70,15 @@ package displayable
 		{
 			if (currentIndex == totalText.length - 1)
 			{
-				timer.removeEventListener(TimerEvent.TIMER, _onUpdate);
-				view.removeEventListener(MouseEvent.CLICK, _onClicked);
-				timer.stop();
+				End();
 			}
-			tmpText += new String(totalText.charAt(currentIndex));
-			displayText(tmpText);
-			currentIndex ++;
+			else
+			{
+				tmpText += new String(totalText.charAt(currentIndex));
+				displayText(tmpText);
+				currentIndex ++;
+			}
+			
 		}
 		
 		private function displayText(text:String):void
@@ -74,11 +89,13 @@ package displayable
 		
 		public function End():void
 		{
+			
 			timer.removeEventListener(TimerEvent.TIMER, _onUpdate);
-			view.removeEventListener(MouseEvent.CLICK, _onClicked);
+			
 			timer.stop();
 			tmpText = totalText;
 			displayText(tmpText);
+			
 		}
 		
 	}

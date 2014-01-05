@@ -291,18 +291,7 @@ package screens
 				view.addChildAt(armyDisplays_arr[i],view.numChildren);
 			}
 			UpdateArmyDisplays();
-			/*
-			//Add bottom screen displays
-			view.addChildAt(console,15);
-			view.addChildAt(actionCounter, 15);
-			view.addChildAt(turnCounter, 15);
 			
-			//Add status panel to stage
-			view.addChildAt(statusPanel, 15);
-			
-			//Add inventory to stage and hide it
-			view.addChildAt(inventory, 15);
-			*/
 			view.addChild(console);
 			view.addChild(actionCounter);
 			view.addChild(turnCounter);
@@ -353,6 +342,7 @@ package screens
 			
 			//trace("Current location on WorldMap Screen generation : "+Main.managers.Level.currentLocation);
 			HideWorldMapIcons();
+			
 			stage.addEventListener(KeyboardEvent.KEY_UP, _onDebugSkip);
 		}
 
@@ -390,6 +380,10 @@ package screens
 				worldMapBackground.gotoAndPlay(26);
 				HideWorldMapIcons();
 				HideBottom();
+			}
+			if (e.keyCode == Keyboard.S)
+			{
+				Main.managers.Save.Save(1);
 			}
 			
 		}
@@ -740,7 +734,7 @@ package screens
 		
 		private function talkFunction():void
 		{
-			talkScreen.Init("TESTTESTESTESTETSTSTSTSTSTSTSTSTSTSTSTSTSTSTSTST");
+			talkScreen.Init(Main.managers.Talk.debugDialog);
 
 		}
 		private function _onTalkScreenClicked(e:MouseEvent):void 

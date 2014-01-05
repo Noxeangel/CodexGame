@@ -3,7 +3,16 @@ package game
 	import codex.armies.Army;
 	import codex.characters.Character;
 	import codex.characters.General;
+	import codex.characters.Vital;
+	import codex.items.Accessory;
+	import codex.items.Armor;
+	import codex.items.Consumable;
 	import codex.items.Inventory;
+	import codex.items.Item;
+	import codex.items.Weapon;
+	import codex.levels.Level;
+	import XML;
+	import Date;
 	/**
 	 * ...
 	 * @author Olivier
@@ -36,11 +45,11 @@ package game
 			
 		}
 		
-		public function Save(xml:XML):void
+		public function Save():XML
 		{
-			CollectData(xml);
+			return (CollectData());
 		}
-		private function CollectData(xml:XML):void
+		private function CollectData():XML
 		{
 			_hero = Main.managers.Character.hero;
 			_lt1 = Main.managers.Character.lt1;
@@ -55,13 +64,122 @@ package game
 			_currentLocation = Main.managers.Level.currentLocation;
 			_levels = Main.managers.Level.Levels;
 			
-			WriteToXML(xml);
+			return (WriteToXML());
 		}
-		private function WriteToXML(xml:XML):void
+		private function WriteToXML():XML
 		{
+			var d:Date = new Date();
+			var tmpXML:XML = new XML(<SAVE></SAVE>);
+			tmpXML.@slot = 1;
 			
+			
+			tmpXML.TIME = new String(d.toTimeString().slice(0 ,d.toTimeString().length - 8 ));
+			
+			tmpXML.DATE = d.toDateString();
+			
+			tmpXML.LOCATION = _currentLocation;
+			
+			tmpXML.TURN = _currentTurn;
+
+			tmpXML.appendChild(writeCharacter(_hero));
+			tmpXML.appendChild(writeCharacter(_lt1));
+			tmpXML.appendChild(writeCharacter(_lt2));
+			tmpXML.appendChild(writeCharacter(_lt3));
+			
+			tmpXML.appendChild(writeArmy(_army));
+			
+			tmpXML.appendChild(writeInventory(_teamInventory));
+			
+			for each(var level:Level in _levels)
+			{
+				tmpXML.appendChild(writeLevel(level));
+			}
+			return (tmpXML);
 		}
 		
+		
+		
+		private function writeCharacter(c:Character):XML
+		{
+			var character:XML = new XML(<CHARACTER></CHARACTER>);
+			character.@ID = c.id;
+			
+			character.NAME = c.name;
+			character.CURRENT_LIFE = (c.vitalsArray[Main.LIFE] as Vital).curValue;
+			character.CURRENT_MANA = (c.vitalsArray[Main.MANA] as Vital).curValue;
+			
+			character.DIALOG_STATE = "DEBUG_NULL";
+			
+			
+			character.WEAPON = c.weaponEquipped == null ? "NULL" : c.weaponEquipped.id;
+			character.ARMOR = c.armorEquipped == null ? "NULL" : c.armorEquipped.id;
+			character.ACCESSORY = c.accesoryEquipped == null ? "NULL" : c.accesoryEquipped.id;
+			
+			return character;
+		}
+		
+		private function writeArmy(a:Army):XML
+		{
+			var army:XML = new XML(<ARMY></ARMY>);
+			
+			var lancer:XML = new XML(<LANCER/>);
+			var archer:XML = new XML(<ARCHER/>);
+			var knight:XML = new XML(<KNIGHT/>);
+			
+			lancer.MAX = a.lancers.maxNumber;
+			lancer.CUR = a.lancers.currentNumber;
+			
+			archer.MAX = a.archers.maxNumber;
+			archer.CUR = a.archers.currentNumber;
+			
+			knight.MAX = a.knights.maxNumber;
+			knight.CUR = a.knights.currentNumber;
+			
+			army.appendChild(lancer);
+			army.appendChild(archer);
+			army.appendChild(knight);
+			
+			return army;
+		}
+		
+		private function writeInventory(i:Inventory):XML
+		{
+			var inventory:XML = new XML(<INVENTORY></INVENTORY>);
+			
+			for each( var c:Consumable in i.consumables)
+			{
+				inventory.CONSUMABLE = c.id; 
+			}
+			for each( var w:Weapon in i.weapons)
+			{
+				inventory.WEAPON = w.id; 
+			}
+			for each( var a:Armor in i.armors)
+			{
+				inventory.ARMOR = a.id; 
+			}
+			for each( var ac:Accessory in i.accesories)
+			{
+				inventory.ACCESSORY = ac.id; 
+			}
+			
+			return inventory;
+		}
+		
+		private function writeLevel(l:Level):XML 
+		{
+			var level:XML = new XML(<LEVEL></LEVEL>);
+			level.@ID = l.id;
+			
+			level.NAME = l.name;
+			
+			level.IS_ALLY = l.isAlly;
+			
+			level.IS_SEARCH_DONE = l.isSearchDone;
+			level.IS_PROPAGANDA_DONE = l.isPropagandaDone;
+			
+			return level;
+		}
 		
 		public function Load(xml:XML):void
 		{

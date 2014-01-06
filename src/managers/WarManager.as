@@ -54,11 +54,14 @@ package managers
 			}
 		}
 		
-		public function calculateInitiativeArray(view:MovieClip):Array 
+		public function calculateInitiativeArray():Array 
 		{
-			var arr:Array;
-			//Must return an array of IState with the States objects already in it
-			//The first state must be :  choose army type
+			var arr:Array = new Array();
+			arr.push("allyArmy");
+			arr.push("general");
+			arr.push("lieutenant");
+			arr.push("enemyArmy");
+			arr.push("enemy");
 			return arr;
 		}
 		

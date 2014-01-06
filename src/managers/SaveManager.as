@@ -5,7 +5,9 @@ package managers
 	 * @author Olivier
 	 */
 	import flash.display.MovieClip;
+	import flash.events.Event;
 	import flash.net.FileReference;
+	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
 	import game.SaveSlot;
@@ -61,23 +63,49 @@ package managers
 		public function Load (slot:int):void
 		{
 			var tmpXML:XML;
+			var loader:URLLoader = new URLLoader();
+			var request:URLRequest;
+			
 			switch(slot)
 			{
 				case 1:
-					
-					slot1.Load(null);
+					request = new URLRequest("Save1.xml");
+					loader.addEventListener(Event.COMPLETE, _onLoadSave1);
+					loader.load(request);
 					break;
 				case 2:
-					slot2.Load(null);
+					request = new URLRequest("Save2.xml");
+					loader.addEventListener(Event.COMPLETE, _onLoadSave2);
+					loader.load(request);
 					break;
 				case 3:
-					slot3.Load(null);
+					request = new URLRequest("Save3.xml");
+					loader.addEventListener(Event.COMPLETE, _onLoadSave3);
+					loader.load(request);
 					break;
 				default:
 					throw new Error("This save slot is not correct try between 1 and 3", "#0001");
 					break;
 				
 			}
+		}
+		
+		private function _onLoadSave3(e:Event):void 
+		{
+			var dataXML:XML = new XML( e.target.data);
+			slot3.Load(dataXML);
+		}
+		
+		private function _onLoadSave2(e:Event):void 
+		{
+			var dataXML:XML = new XML(e.target.data);
+			slot2.Load(dataXML);
+		}
+		
+		private function _onLoadSave1(e:Event):void 
+		{
+			var dataXML:XML = new XML(e.target.data);
+			slot1.Load(dataXML);
 		}
 	}
 

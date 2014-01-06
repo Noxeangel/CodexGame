@@ -94,17 +94,31 @@ package game
 			{
 				tmpXML.appendChild(writeLevel(level));
 			}
+			for each(var ennemy:Array in _ennemies)
+			{
+				tmpXML.appendChild(writeEnemy(ennemy));
+			}
+			
 			return (tmpXML);
 		}
 		
-		
+		private function writeEnemy(a:Array):XML
+		{
+			var enemy:XML = new XML(<ENEMY></ENEMY>);
+			enemy.POSITION = a[2];
+			enemy.appendChild(writeCharacter(a[0]));
+			enemy.appendChild(writeArmy(a[1]));
+			trace(enemy);
+			return enemy;
+		}
 		
 		private function writeCharacter(c:Character):XML
 		{
 			var character:XML = new XML(<CHARACTER></CHARACTER>);
 			character.@ID = c.id;
-			
+			character.ARCHETYPE = c.archetype.id;
 			character.NAME = c.name;
+			character.CURRENT_LEVEL = c.level;
 			character.CURRENT_LIFE = (c.vitalsArray[Main.LIFE] as Vital).curValue;
 			character.CURRENT_MANA = (c.vitalsArray[Main.MANA] as Vital).curValue;
 			
@@ -188,12 +202,120 @@ package game
 		
 		private function ReadFromXML(xml:XML):void
 		{
+			_currentLocation = xml.LOCATION;
+			_currentTurn = xml.TURN;
+			trace(xml.CHARACTER[3]);
+			for (var i:int = 0; i < 4; i++ )
+			{
+				ReadCharacter(xml.CHARACTER[i]);
+			}
+			_army = ReadArmy(new XML(xml.ARMY));
+			_levels = new Array();
+			for each(var xmlNodeLevel:XML in xml.LEVEL)
+			{
+				_levels.push(ReadLevel(xmlNodeLevel));
+			}
+			_ennemies = new Array();
+			for each(var xmlNodeEnemy:XML in xml.ENEMY)
+			{
+				_ennemies.push(ReadEnemy(xmlNodeEnemy));
+			}
 			DispatchData();
 		}
 		
+		private function ReadCharacter(xml:XML):void
+		{
+			var tmpCharacter:Character = new Character();
+			tmpCharacter.id = xml.@ID;
+			tmpCharacter.name = xml.NAME;
+			tmpCharacter.level = (int)(xml.CURRENT_LEVEL);
+			switch(tmpCharacter.id)
+			{
+				case "001":
+					tmpCharacter.archetype = Main.managers.Character.archList[Main.GENERAL];
+					tmpCharacter.characterIcon = new HeroIconMC();
+					break;
+				case "002":
+					tmpCharacter.archetype = Main.managers.Character.archList[Main.PRIEST];
+					tmpCharacter.characterIcon = new Lt1IconMC();
+					break;
+				case "003":
+					tmpCharacter.archetype = Main.managers.Character.archList[Main.ASSASSIN];
+					tmpCharacter.characterIcon = new Lt2IconMC();
+					break;
+				case "004":
+					tmpCharacter.archetype = Main.managers.Character.archList[Main.WIZZARD];
+					tmpCharacter.characterIcon = new Lt3IconMC();
+					break;
+			}
+			tmpCharacter.duelSkillArray = Main.managers.Character.duelSkillsArray;
+			tmpCharacter.warSkillArray = Main.managers.Character.warSkillsArray;
+			tmpCharacter.LevelUp();
+			tmpCharacter.animationMachine.Init(tmpCharacter.archetype.name);
+			//tmpCharacter.SetSkillKnown();
+			switch(xml.@ID)
+			{
+				case "001":
+					_hero = (tmpCharacter as General);
+					_hero.currentPosition = _currentLocation;
+					break;
+				case "002":
+					_lt1 = tmpCharacter;
+					break;
+				case "003":
+					_lt2 = tmpCharacter;
+					break;
+				case "004":
+					_lt3 = tmpCharacter;
+					break;
+			}
+			
+		}
+		private function ReadArmy(xml:XML):Army
+		{
+			var tmpArmy:Army = new Army();
+			tmpArmy.SetArmyCorps((int)(xml.LANCER), (int)(xml.ARCHER), (int)(xml.KNIGHT));
+			return tmpArmy;
+		}
+		private function ReadLevel(xml:XML):Level
+		{
+			var tmpLevel:Level = new Level();
+			tmpLevel.id = xml.@ID;
+			tmpLevel.name = xml.NAME;
+			tmpLevel.isAlly = xml.IS_ALLY == "true" ? true : false;
+			tmpLevel.isSearchDone = xml.IS_SEARCHED_DONE == "true" ? true : false;
+			tmpLevel.isPropagandaDone = xml.IS_PROPAGANDA_DONE == "true" ? true : false;
+			return tmpLevel;
+		}
+		private function ReadEnemy(xml:XML):Array
+		{
+			var tmpArray:Array = new Array();
+			
+			return tmpArray;
+		}
 		private function DispatchData():void
 		{
+			Main.managers.Character.hero = _hero ;
+			Main.managers.Character.lt1 = _lt1 ;
+			Main.managers.Character.lt2 = _lt2 ;
+			Main.managers.Character.lt3 = _lt3 ;
 			
+			Main.managers.Character.enemies = _ennemies  ;
+			
+			Main.managers.Character.army = _army  ;
+			
+			_teamInventory = new Inventory(); 						//DEBUG
+			Main.managers.Item.partyInventory =_teamInventory  ;
+			
+			Main.managers.Level.currentTurn =_currentTurn  ;
+			Main.managers.Level.currentLocation =_currentLocation  ;
+			
+			for (var i:int = 0 ; i < Main.managers.Level.Levels.length ; i++)
+			{
+				(Main.managers.Level.Levels[i] as Level).isAlly = (_levels[i] as Level).isAlly  ;
+				(Main.managers.Level.Levels[i] as Level).isSearchDone = (_levels[i] as Level).isSearchDone  ;
+				(Main.managers.Level.Levels[i] as Level).isPropagandaDone = (_levels[i] as Level).isPropagandaDone  ;
+			}
 		}
 		
 		

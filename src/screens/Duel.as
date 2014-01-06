@@ -160,11 +160,14 @@ package screens
 
 			hero.animationMachine.x = 200;
 			hero.animationMachine.y = 400;
-
+			hero.animationMachine.scaleX = 1;
+			hero.animationMachine.scaleY = 1;
+			
 			enemy.animationMachine.x = 800;
 			enemy.animationMachine.y = 400;
 			enemy.animationMachine.scaleX = -1;
-
+			enemy.animationMachine.scaleY = 1;
+			
 			_ltChooser = new LtChooser();
 			_ltChooser.x = stage.stageWidth / 2;
 			_ltChooser.y = stage.stageHeight / 2;
@@ -285,15 +288,15 @@ package screens
 				step = 0;
 				round ++;
 			}
-			switch(getQualifiedClassName(InitiativeArray[step]))
+			switch(InitiativeArray[step])
 			{
-				case getQualifiedClassName(ChooseSkillGeneralState):
+				case "general":
 					GeneralSkillChoiceScreenGeneration();
 					break;
-				case getQualifiedClassName(ChooseSkillLieutenantState):
+				case "lieutenant":
 					LtSkillChoiceScreenGeneration();
 					break;
-				case getQualifiedClassName(ChooseSkillEnemyState):
+				case "enemy":
 					EnemySkillChoiceScreenGeneration();
 					break;
 			}

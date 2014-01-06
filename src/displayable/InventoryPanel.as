@@ -6,6 +6,7 @@ package displayable
 	import codex.items.Inventory;
 	import codex.items.Item;
 	import codex.items.Weapon;
+	import events.InventoryEvent;
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	
@@ -48,22 +49,38 @@ package displayable
 			if (e.currentTarget is ItemDisplayer)
 			{
 				selectedItem = (e.currentTarget as ItemDisplayer).holdedItem;
+				
+				
+				if (selectedItem.id.charAt(0) == 'K')
+				{
+					dispatchEvent(new InventoryEvent(InventoryEvent.CONSUMABLE_SELECTED, selectedItem));
+				}
+				if (selectedItem.id.charAt(0) == 'A')
+				{
+					dispatchEvent(new InventoryEvent(InventoryEvent.ARMOR_SELECTED, selectedItem));
+				}
+				if (selectedItem.id.charAt(0) == 'C')
+				{
+					dispatchEvent(new InventoryEvent(InventoryEvent.ACCESSORY_SELECTED, selectedItem));
+				}
+				if (selectedItem.id.charAt(0) == 'B' || selectedItem.id.charAt(0) == 'S' || selectedItem.id.charAt(0) == 'D' || selectedItem.id.charAt(0) == 'W')
+				{
+					dispatchEvent(new InventoryEvent(InventoryEvent.WEAPON_SELECTED, selectedItem));
+				}
 			}
 		}
 		
 		public function SetInventoryPanel(inventory:Array):void
 		{
-			
+			ResetInventory();
 			for each (var i:Item in inventory)
 			{
 				if (i != null)
 				{
 					itemDisplayers_arr.push(new ItemDisplayer(i));
-					
 				}
-				
 			}
-			trace(itemDisplayers_arr.length);
+			//trace(itemDisplayers_arr.length);
 			DisplayInventoryPanel();
 		}
 		

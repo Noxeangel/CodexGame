@@ -34,6 +34,31 @@ package codex.items
 					break;
 			}
 		}
+		public function RemoveItem(item:Item):void
+		{
+			var i:int;
+			switch (item)
+			{
+				
+				case typeof(Consumable):
+					for ( i = 0; i < consumables.length ; i++ )
+					consumables.splice(accesories.indexOf(item as Consumable), 1);
+					break;
+				case typeof(Weapon):
+					for ( i = 0; i < weapons.length ; i++ )
+					weapons.splice(accesories.indexOf(item as Weapon), 1);
+					break;
+				case typeof(Armor):
+					armors.splice(accesories.indexOf(item as Armor), 1);
+					break;
+				case typeof(Accessory):
+					
+					accesories.splice(accesories.indexOf(item as Accessory), 1);
+						
+					
+					break;
+			}
+		}
 		
 		public function AddInventory(inv:Inventory):void
 		{

@@ -45,7 +45,7 @@ package managers
 		//				Archetypes and Array where the archetypes are stored after loading of the XML Data
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		private var archList:Array = new Array();
+		public var archList:Array = new Array();
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Hero, Lieutenants and Army Corps
@@ -322,6 +322,18 @@ package managers
 				if ( tmpGeneralArray[2] == id)
 				{
 					return tmpGeneralArray[0];
+				}
+			}
+			return null;
+		}
+		
+		public function returnEnemyArmyFromLevel(id:String):Army
+		{
+			for each (var tmpArmy:Array in enemies)
+			{
+				if ( tmpArmy[2] == id)
+				{
+					return tmpArmy[1];
 				}
 			}
 			return null;

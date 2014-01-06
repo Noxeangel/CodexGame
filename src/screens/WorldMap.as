@@ -1,6 +1,9 @@
 package screens 
 {
 	import codex.characters.Character;
+	import codex.items.Accessory;
+	import codex.items.Armor;
+	import codex.items.Item;
 	import displayable.ActionPointsCounter;
 	import displayable.ArmyDisplay;
 	import displayable.CharacterDisplay;
@@ -16,6 +19,7 @@ package screens
 	import codex.items.Consumable;
 	import codex.items.Weapon;
 	import codex.levels.Level;
+	import events.InventoryEvent;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
@@ -149,7 +153,10 @@ package screens
 			//Simple counter variable for the for loops
 			var i:int;
 			
-			
+			addEventListener(InventoryEvent.ACCESSORY_SELECTED, Equip);
+			addEventListener(InventoryEvent.WEAPON_SELECTED, Equip);
+			addEventListener(InventoryEvent.ARMOR_SELECTED, Equip);
+			addEventListener(InventoryEvent.CONSUMABLE_SELECTED, Equip);
 			
 			//Global click listener of the view
 			view.addEventListener(MouseEvent.CLICK, _onClickHandler);
@@ -385,7 +392,10 @@ package screens
 			{
 				Main.managers.Save.Save(1);
 			}
-			
+			if (e.keyCode == Keyboard.L)
+			{
+				Main.managers.Save.Load(1);
+			}
 		}
 		private function _Update(e:Event):void 
 		{
@@ -705,7 +715,7 @@ package screens
 				Main.managers.Level.Levels[index].isSearchDone = true;
 				RemoveActionPoints(1);
 				Main.managers.Item.partyInventory.AddInventory(Main.managers.Level.Levels[index].searchItem);
-				inventory.ResetInventory();
+				//inventory.ResetInventory();
 				inventory.SetInventoryPanel(Main.managers.Item.partyInventory.ReturnItemArray());
 				console.DisplayOnConsole(new String("Vous fouillez le champs de bataille de " + Main.managers.Level.Levels[index].name));
 			}
@@ -727,6 +737,38 @@ package screens
 			UpdateCharacterDisplays();
 		}
 		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//				Custom function: manage inventory button click
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		private function Equip(e:InventoryEvent):void
+		{
+			
+			e.stopImmediatePropagation();
+			
+			trace(Main.managers.Item.partyInventory.ReturnItemArray().length);
+			Main.managers.Item.partyInventory.RemoveItem(e.selectedItem);
+			trace(Main.managers.Item.partyInventory.ReturnItemArray().length);
+			switch (e.selectedItem)
+			{
+				case typeof(Consumable):
+					
+					break;
+				case typeof(Weapon):
+					Main.managers.Item.partyInventory.AddItem(Main.managers.Character.hero.weaponEquipped);
+					Main.managers.Character.hero.ChangeWeapon(e.selectedItem as Weapon) ;
+					break;
+				case typeof(Armor):
+					Main.managers.Item.partyInventory.AddItem(Main.managers.Character.hero.armorEquipped);
+					Main.managers.Character.hero.ChangeArmor(e.selectedItem as Armor) ;
+					break;
+				case typeof(Accessory):
+					Main.managers.Item.partyInventory.AddItem(Main.managers.Character.hero.accesoryEquipped);
+					Main.managers.Character.hero.ChangeAccessory(e.selectedItem as Accessory) ;
+					break;
+			}
+			UpdateCharacterDisplays();
+			inventory.SetInventoryPanel(Main.managers.Item.partyInventory.ReturnItemArray());
+		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Custom function: manage talk button click
 		//				DEBUG

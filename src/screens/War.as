@@ -4,6 +4,7 @@ package screens
 	import codex.characters.Character;
 	import codex.characters.General;
 	import codex.characters.Skill;
+	import displayable.ArmyChooser;
 	import displayable.CharacterDisplay;
 	import displayable.Console;
 	import displayable.DuelCharacterDisplay;
@@ -26,6 +27,7 @@ package screens
 	import screens.FSM.DuelFSM.ChooseSkillGeneralState;
 	import screens.FSM.DuelFSM.ChooseSkillLieutenantState;
 	import flash.ui.Keyboard;
+
 	/**
 	 * ...
 	 * @author Olivier
@@ -54,6 +56,7 @@ package screens
 		
 		
 		private var _ltChooser:LtChooser;
+		private var _armyChooser:ArmyChooser;
 		private var _skillChooser:SkillChooser;
 		private var _targetChooser:TargetChooser;
 		
@@ -68,6 +71,9 @@ package screens
 		private var allyArmy:Army;
 		private var enemyArmy:Army;
 		
+		private var selectedAllyArmyCorp:int;
+		private var selectedEnemyArmyCorp:int;
+		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//				Constructor of the WorldMap Screen
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +86,7 @@ package screens
 			
 			//Name of the current screen (used by the FSM when it tries to switch to this screen
 			_screenName = "War";
-
+			
 		}
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,6 +126,9 @@ package screens
 				throw new Error("No ennemy in this level, consult Enemies.XML for more details");
 			}
 			
+			allyArmy = Main.managers.Character.army;
+			enemyArmy = Main.managers.Character.returnEnemyArmyFromLevel(Main.managers.Level.getIDByIndex(Main.managers.Level.currentLocation));
+			
 			//init the Timer which will call the _update function
 			timer = new Timer(1000 / 24, 0);
 			timer.addEventListener(TimerEvent.TIMER, _update);
@@ -158,17 +167,24 @@ package screens
 
 			ltDisplay = new DuelCharacterDisplay(0 , stage.stageHeight);
 
-			hero.animationMachine.x = 200;
-			hero.animationMachine.y = 400;
-
-			enemy.animationMachine.x = 800;
-			enemy.animationMachine.y = 400;
-			enemy.animationMachine.scaleX = -1;
+			hero.animationMachine.x = 300;
+			hero.animationMachine.y = 500;
+			hero.animationMachine.scaleX = hero.animationMachine.scaleY = 0.5;
+			
+			enemy.animationMachine.x = 700;
+			enemy.animationMachine.y = 500;
+			enemy.animationMachine.scaleX = enemy.animationMachine.scaleY = 0.5;
+			enemy.animationMachine.scaleX = -0.5;
 
 			_ltChooser = new LtChooser();
 			_ltChooser.x = stage.stageWidth / 2;
-			_ltChooser.y = stage.stageHeight / 2;
+			_ltChooser.y = 100;
 			_ltChooser.addEventListener(MouseEvent.CLICK, _onLtChoosed);
+			
+			_armyChooser = new ArmyChooser();
+			_armyChooser.x = stage.stageWidth / 2;
+			_armyChooser.y = 100;
+			_armyChooser.addEventListener(MouseEvent.CLICK, _armyChoosed);
 			
 			_skillChooser = new SkillChooser();
 			_skillChooser.x = 0;
@@ -193,7 +209,7 @@ package screens
 			_view.addChild(new FadingText("DEBUG: War system is not fonctional at all \n Press Enter to go to Duel Screen", stage.stageWidth / 2, stage.stageHeight / 2 - 200, 15, 20, 0xFF0000));
 			
 			
-			//LtChoiceScreenGeneration();
+			LtChoiceScreenGeneration();
 		}
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,7 +267,49 @@ package screens
 				
 				lieutenant.animationMachine.x = 150;
 				lieutenant.animationMachine.y = 500;
+				lieutenant.animationMachine.scaleX = lieutenant.animationMachine.scaleY = 0.5;
+				
 				view.addChild(lieutenant.animationMachine);
+				ArmyChoiceScreenGeneration();
+			}
+		}
+		
+		private function ArmyChoiceScreenGeneration():void
+		{
+			
+			view.addChild(_armyChooser);
+			
+		}
+		
+		private function _armyChoosed(e:MouseEvent):void
+		{
+			//trace (e.target);
+			if (e.target == _armyChooser.view.army1Icon_mc || e.target == _armyChooser.view.army2Icon_mc || e.target == _armyChooser.view.army3Icon_mc)
+			{
+				
+				_armyChooser.removeEventListener(MouseEvent.CLICK, _onLtChoosed);
+				view.removeChild(_armyChooser);
+				if ( allyArmy.retrunCorpByID(selectedAllyArmyCorp).animationMachine.parent )
+				{
+					view.removeChild(allyArmy.retrunCorpByID(selectedAllyArmyCorp).animationMachine);
+				}
+				
+				switch(e.target)
+				{
+					case _armyChooser.view.army1Icon_mc:
+						selectedAllyArmyCorp = Main.LANCER;
+						break;
+					case _armyChooser.view.army2Icon_mc:
+						selectedAllyArmyCorp = Main.ARCHER;
+						break;
+					case _armyChooser.view.army3Icon_mc:
+						selectedAllyArmyCorp = Main.KNIGHT;
+						break;
+				}
+				allyArmy.retrunCorpByID(selectedAllyArmyCorp).animationMachine.x = 300;
+				allyArmy.retrunCorpByID(selectedAllyArmyCorp).animationMachine.y = 400;
+				allyArmy.retrunCorpByID(selectedAllyArmyCorp).animationMachine.Init(2, allyArmy.retrunCorpByID(selectedAllyArmyCorp).currentNumber);
+				view.addChild(allyArmy.retrunCorpByID(selectedAllyArmyCorp).animationMachine);
 				InitTurnManager();
 			}
 		}
@@ -264,7 +322,7 @@ package screens
 		{
 			if (InitiativeArray == null)
 			{
-				InitiativeArray = Main.managers.Duel.calculateInitiativeArray();
+				InitiativeArray = Main.managers.War.calculateInitiativeArray();
 			}
 			
 			if (CheckWinOrLoose())
@@ -278,18 +336,29 @@ package screens
 				step = 0;
 				round ++;
 			}
-			switch(getQualifiedClassName(InitiativeArray[step]))
+			switch(InitiativeArray[step])
 			{
-				case getQualifiedClassName(ChooseSkillGeneralState):
+				case "allyArmy":
+					ArmyChoiceScreenGeneration();
+					break;
+				case "general":
 					GeneralSkillChoiceScreenGeneration();
 					break;
-				case getQualifiedClassName(ChooseSkillLieutenantState):
+				case "lieutenant":
 					LtSkillChoiceScreenGeneration();
 					break;
-				case getQualifiedClassName(ChooseSkillEnemyState):
+				case "enemyArmy":
+					EnemeyArmyScreenGeneration();
+					break
+				case "enemy":
 					EnemySkillChoiceScreenGeneration();
 					break;
 			}
+		}
+		
+		private function EnemeyArmyScreenGeneration():void 
+		{
+			InitTurnManager();
 		}
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -361,6 +430,7 @@ package screens
 				chosenSkill.effectAnim.y = chosenTarget.animationMachine.y;
 				chosenSkill.effectAnim.gotoAndPlay(1);
 				view.addChild(chosenSkill.effectAnim);
+				
 				InitTurnManager();
 			}
 		}

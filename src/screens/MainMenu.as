@@ -4,12 +4,14 @@ package screens
 	import displayable.OptionWindow;
 	import displayable.PaperButtonLeft;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import MainMenuMC;
 	import flash.display.MovieClip;
 	import flash.system.fscommand;
 	import managers.TextManager;
 	import events.ScreenEvents;
+	import flash.ui.Keyboard;
 	/**
 	 * ...
 	 * @author Olivier
@@ -83,7 +85,7 @@ package screens
 			quit_btn.addEventListener(MouseEvent.CLICK, _onClickHandler);
 			
 			Main.managers.SoundM.playBGM(Main.BGM_MAIN_MENU);
-			
+			stage.addEventListener(KeyboardEvent.KEY_UP, _onDebugSkip);
 			GenerateScreen();
 		}
 		
@@ -123,7 +125,13 @@ package screens
 			}
 			
 		}
-		
+		private function _onDebugSkip(e:KeyboardEvent):void 
+		{
+			if (e.keyCode == Keyboard.L)
+			{
+				//Main.managers.Save.Load(1);
+			}
+		}
 		// =====================================================================
 		override public function end():void
 		{

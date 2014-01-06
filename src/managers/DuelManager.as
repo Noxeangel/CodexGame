@@ -53,13 +53,13 @@ package managers
 			view.addChild(damagesText);
 		}
 		
-		public function calculateInitiativeArray(view:MovieClip = null):Array
+		public function calculateInitiativeArray():Array
 		{
 			var arr:Array = new Array();
-			arr.push(new ChooseSkillGeneralState());
-			arr.push(new ChooseSkillLieutenantState());
-			arr.push(new ChooseSkillEnemyState());
-			//Must return an array of IState with the States objects already in it
+			arr.push("general");
+			arr.push("lieutenant");
+			arr.push("enemy");
+			
 			return arr;
 		}
 		
